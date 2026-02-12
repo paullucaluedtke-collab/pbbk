@@ -6,10 +6,12 @@ import ReceiptTable from '@/components/ReceiptTable';
 import ImageModal from '@/components/ImageModal';
 import { ReceiptData } from '@/types/receipt';
 import { generateCSV, downloadCSV } from '@/utils/csvHelper';
-import { generatePDF } from '@/utils/pdfHelper';
-import { Download, Ban, AlertCircle, FileText } from 'lucide-react';
+import { generateZipExport } from '@/utils/exportHelper';
+import { Download, Ban, AlertCircle, FileArchive } from 'lucide-react';
 import { addReceipt, fetchReceipts, removeReceipt, editReceipt } from '@/app/actions';
 import styles from './page.module.css';
+import Auth from '@/components/Auth';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function Home() {
     const [receipts, setReceipts] = useState<ReceiptData[]>([]);
@@ -17,8 +19,37 @@ export default function Home() {
     const [error, setError] = useState<string | null>(null);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    // Initial Load from Server
+    const [user, setUser] = useState<any>(null);
+    const [loadingAuth, setLoadingAuth] = useState(true);
+
+    // Check Auth Session
     useEffect(() => {
+        const checkUser = async () => {
+            if (!supabase) {
+                setLoadingAuth(false);
+                return;
+            }
+
+            const { data: { session } } = await supabase.auth.getSession();
+            setUser(session?.user ?? null);
+            setLoadingAuth(false);
+
+            const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+                setUser(session?.user ?? null);
+            });
+
+            return () => subscription.unsubscribe();
+        };
+        checkUser();
+    }, []);
+
+    // Initial Load from Server (only if user is logged in or we are in local-only mode fallback)
+    useEffect(() => {
+        if (loadingAuth) return;
+
+        // If supabase is configured but no user -> don't load data yet
+        if (supabase && !user) return;
+
         const load = async () => {
             try {
                 const data = await fetchReceipts();
@@ -29,7 +60,7 @@ export default function Home() {
             }
         };
         load();
-    }, []);
+    }, [user, loadingAuth]);
 
     const handleFileUpload = async (file: File) => {
         setIsProcessing(true);
@@ -86,8 +117,8 @@ export default function Home() {
         downloadCSV(csv, `belege_export_${new Date().toISOString().slice(0, 10)}.csv`);
     };
 
-    const handleDownloadPDF = () => {
-        generatePDF(receipts);
+    const handleDownloadZip = async () => {
+        await generateZipExport(receipts);
     };
 
     const handleClear = async () => {
@@ -99,6 +130,36 @@ export default function Home() {
             setReceipts([]);
         }
     };
+
+    if (!supabase) {
+        return (
+            <div className="container" style={{ maxWidth: '600px', margin: '4rem auto', padding: '2rem', border: '1px solid #ddd', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>Setup Erforderlich</h2>
+                <div style={{ backgroundColor: '#fff3cd', color: '#856404', padding: '1rem', borderRadius: '4px', marginBottom: '1.5rem' }}>
+                    <p>Um die Cloud-Speicherung und Multi-Device-Sync zu nutzen, fehlt noch die Verbindung zu Supabase.</p>
+                </div>
+
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Schritte:</h3>
+                <ol style={{ paddingLeft: '1.5rem', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                    <li style={{ marginBottom: '0.5rem' }}>Erstelle ein kostenloses Projekt auf <a href="https://supabase.com" target="_blank" style={{ color: '#0070f3' }}>supabase.com</a>.</li>
+                    <li style={{ marginBottom: '0.5rem' }}>Gehe zu <strong>Project Settings &rarr; API</strong>.</li>
+                    <li style={{ marginBottom: '0.5rem' }}>Kopiere die <strong>Project URL</strong> und den <strong>anon public Key</strong>.</li>
+                    <li style={{ marginBottom: '0.5rem' }}>Füge diese in die Datei <code>.env.local</code> ein.</li>
+                </ol>
+                <p style={{ fontSize: '0.9rem', color: '#666' }}>
+                    Starten Sie danach den Server neu (<code>npm run dev</code>).
+                </p>
+            </div>
+        );
+    }
+
+    if (loadingAuth) {
+        return <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>Lade...</div>;
+    }
+
+    if (supabase && !user) {
+        return <Auth />;
+    }
 
     return (
         <main className={styles.main}>
@@ -138,11 +199,12 @@ export default function Home() {
                                 <Download size={16} /> CSV
                             </button>
                             <button
-                                onClick={handleDownloadPDF}
+                                onClick={handleDownloadZip}
                                 disabled={receipts.length === 0}
                                 className={styles.primaryButton}
+                                style={{ backgroundColor: '#2e7d32' }} // Green for emphasis
                             >
-                                <FileText size={16} /> PDF Export
+                                <FileArchive size={16} /> Export für Steuerbüro (ZIP)
                             </button>
                         </div>
                     </div>
