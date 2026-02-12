@@ -1,0 +1,38 @@
+{
+  "node": {
+    "0df814c12b5d8570ec45e19db3a1f711f4638ee2": {
+      "workers": {
+        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CPaul%5C%5CDownloads%5C%5CAUTORECHNUNG%5C%5Csrc%5C%5Capp%5C%5Cactions.ts%22%2C%5B%22addReceipt%22%2C%22removeReceipt%22%2C%22fetchReceipts%22%2C%22editReceipt%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    },
+    "79520af3e762e5826dbd6c40a0659730551e31d3": {
+      "workers": {
+        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CPaul%5C%5CDownloads%5C%5CAUTORECHNUNG%5C%5Csrc%5C%5Capp%5C%5Cactions.ts%22%2C%5B%22addReceipt%22%2C%22removeReceipt%22%2C%22fetchReceipts%22%2C%22editReceipt%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    },
+    "b782000857cce5e9b0dd6b44948fd1a54e6814f4": {
+      "workers": {
+        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CPaul%5C%5CDownloads%5C%5CAUTORECHNUNG%5C%5Csrc%5C%5Capp%5C%5Cactions.ts%22%2C%5B%22addReceipt%22%2C%22removeReceipt%22%2C%22fetchReceipts%22%2C%22editReceipt%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    },
+    "c78a45bd5e84fe4896c506d505244b81d94f7f07": {
+      "workers": {
+        "app/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CPaul%5C%5CDownloads%5C%5CAUTORECHNUNG%5C%5Csrc%5C%5Capp%5C%5Cactions.ts%22%2C%5B%22addReceipt%22%2C%22removeReceipt%22%2C%22fetchReceipts%22%2C%22editReceipt%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/page": "action-browser"
+      }
+    }
+  },
+  "edge": {},
+  "encryptionKey": "+EvvwPy8lDJa1F63/Q6UAcE5PSAEytBqYYHb8Oin8MI="
+}

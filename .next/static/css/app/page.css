@@ -1,0 +1,393 @@
+/*!********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[3]!./src/components/UploadZone.module.css ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************/
+.UploadZone_uploadZone__w4K_x {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 4rem 2rem;
+    text-align: center;
+    background: var(--background);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.UploadZone_uploadZone__w4K_x:hover {
+    border-color: var(--primary);
+    background: var(--secondary);
+}
+
+.UploadZone_dragging__CjYJG {
+    border-color: var(--primary);
+    background: var(--secondary);
+    transform: scale(1.01);
+}
+
+.UploadZone_processing__c_591 {
+    opacity: 0.8;
+    cursor: wait;
+    pointer-events: none;
+}
+
+.UploadZone_fileInput__35yGx {
+    display: none;
+}
+
+.UploadZone_label__uiXD_ {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.UploadZone_iconWrapper__gnr2K {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.UploadZone_spinner__Wz4yM {
+    animation: UploadZone_spin__jICHt 1s linear infinite;
+}
+
+.UploadZone_title__ov_CW {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.UploadZone_subtitle__jtIPN {
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+@keyframes UploadZone_spin__jICHt {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+/*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[3]!./src/components/ReceiptTable.module.css ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************/
+.ReceiptTable_tableWrapper__vBGju {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--background);
+    margin-top: 2rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+.ReceiptTable_table__r7pb9 {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.ReceiptTable_table__r7pb9 th {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.ReceiptTable_table__r7pb9 td {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.ReceiptTable_table__r7pb9 tr:last-child td {
+    border-bottom: none;
+}
+
+.ReceiptTable_table__r7pb9 tr:hover {
+    background-color: var(--secondary);
+}
+
+.ReceiptTable_emptyState__1m_N7 {
+    text-align: center;
+    padding: 3rem;
+    color: #64748b;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    margin-top: 2rem;
+}
+
+.ReceiptTable_input__4gEMi {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    background: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    transition: all 0.2s;
+}
+
+.ReceiptTable_input__4gEMi:focus,
+.ReceiptTable_input__4gEMi:hover {
+    background: var(--background);
+    border-color: var(--ring);
+    outline: none;
+}
+
+.ReceiptTable_input__4gEMi:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ReceiptTable_number__Z_AnC {
+    text-align: right;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+    min-width: 80px;
+}
+
+.ReceiptTable_bold__R586G {
+    font-weight: 600;
+}
+
+.ReceiptTable_actions__sxFSO {
+    width: 40px;
+    text-align: center;
+}
+
+.ReceiptTable_colTiny__l9YvJ {
+    width: 40px;
+    text-align: center;
+    padding: 0.5rem 0.25rem !important;
+}
+
+.ReceiptTable_iconBtn__lCJNB {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.ReceiptTable_iconBtn__lCJNB:hover {
+    color: var(--primary);
+    background: #eff6ff;
+}
+
+.ReceiptTable_deleteBtn___x0RS {
+}
+
+.ReceiptTable_deleteBtn___x0RS:hover {
+    color: #ef4444;
+    background: #fef2f2;
+}
+
+.ReceiptTable_income__rv17U {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.ReceiptTable_expense__3ivaa {
+    color: #ea580c;
+}
+/*!********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[3]!./src/components/ImageModal.module.css ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************/
+.ImageModal_overlay__cWV9m {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 2rem;
+    -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+    animation: ImageModal_fadeIn__zTatk 0.2s ease-out;
+}
+
+.ImageModal_modal__6W_zt {
+    position: relative;
+    background: white;
+    border-radius: var(--radius);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    animation: ImageModal_scaleIn___8fzG 0.2s ease-out;
+}
+
+.ImageModal_closeBtn__KgiPZ {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    z-index: 10;
+}
+
+.ImageModal_closeBtn__KgiPZ:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.ImageModal_image__aFR2v {
+    display: block;
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+}
+
+@keyframes ImageModal_fadeIn__zTatk {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes ImageModal_scaleIn___8fzG {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+/*!*******************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[3]!./src/app/page.module.css ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************/
+.page_main__GlU4n {
+    min-height: 100vh;
+    background-color: var(--background);
+    padding-bottom: 4rem;
+}
+
+.page_header__kVzhN {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.page_title__3jonF {
+    font-size: 1.875rem;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.page_subtitle__iAJUg {
+    color: #64748b;
+    font-size: 1rem;
+}
+
+.page_card__QV0Om {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    border: 1px solid var(--border);
+}
+
+.page_controls__MGrPX {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.page_controlButtons__LOpkK {
+    display: flex;
+    gap: 1rem;
+}
+
+.page_button__vnlhW {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.page_primaryButton__iKEy8 {
+    background-color: var(--primary);
+    color: white;
+    border: 1px solid var(--primary);
+}
+
+.page_primaryButton__iKEy8:hover:not(:disabled) {
+    background-color: #2563eb;
+}
+
+.page_primaryButton__iKEy8:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page_secondaryButton__UQnQZ {
+    background-color: white;
+    color: #64748b;
+    border: 1px solid var(--border);
+}
+
+.page_secondaryButton__UQnQZ:hover:not(:disabled) {
+    background-color: #f1f5f9;
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.page_secondaryButton__UQnQZ:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page_errorBanner__bjFiy {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+}
