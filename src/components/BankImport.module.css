@@ -1,0 +1,56 @@
+.container {
+    margin-bottom: 2rem;
+}
+
+.uploadBox {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fileInput {
+    display: none;
+}
+
+.label {
+    display: inline-flex;
+    cursor: pointer;
+}
+
+.buttonContent {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+
+.buttonContent:hover {
+    background-color: var(--muted);
+    border-color: var(--ring);
+}
+
+.error {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ef4444;
+    font-size: 0.875rem;
+}
+
+.success {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #16a34a;
+    font-size: 0.875rem;
+}

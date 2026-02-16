@@ -1,16 +1,16 @@
 export type ReceiptType = 'Ausgabe' | 'Einnahme';
 
-export type TaxCategory = 
-    | 'Büromat./Porto/Tel.' 
-    | 'Fortbildung' 
-    | 'KFZ-Kosten' 
-    | 'Miete/Nebenkosten' 
-    | 'Reisekosten' 
-    | 'Bewirtung' 
-    | 'Wareneingang' 
-    | 'Fremdleistung' 
-    | 'Geldtransit' 
-    | 'Privatentnahme' 
+export type TaxCategory =
+    | 'Büromat./Porto/Tel.'
+    | 'Fortbildung'
+    | 'KFZ-Kosten'
+    | 'Miete/Nebenkosten'
+    | 'Reisekosten'
+    | 'Bewirtung'
+    | 'Wareneingang'
+    | 'Fremdleistung'
+    | 'Geldtransit'
+    | 'Privatentnahme'
     | 'Sonstiges';
 
 export interface ReceiptData {
@@ -23,4 +23,7 @@ export interface ReceiptData {
     type: ReceiptType;
     property?: string; // Für Vermietung und Verpachtung
     imageUrl?: string; // Base64 or URL
+    status: 'Pending' | 'Verified' | 'Rejected';
+    verifiedAt?: string;
+    verifiedBy?: string;
 }

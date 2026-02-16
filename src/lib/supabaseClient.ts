@@ -1,5 +1,5 @@
 
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -10,5 +10,5 @@ const isValidUrl = supabaseUrl && supabaseUrl.startsWith('http');
 const isPlaceholder = supabaseUrl === 'YOUR_SUPABASE_URL';
 
 export const supabase = (isValidUrl && !isPlaceholder && supabaseKey)
-    ? createClient(supabaseUrl, supabaseKey)
+    ? createBrowserClient(supabaseUrl, supabaseKey)
     : null;

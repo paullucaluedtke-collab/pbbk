@@ -3,8 +3,10 @@
 import { revalidatePath } from 'next/cache';
 import { ReceiptData } from '@/types/receipt';
 import { saveReceipt, getReceipts as getReceiptsFromStorage, deleteReceipt as deleteReceiptFromStorage, updateReceipt } from '@/lib/storage';
+import { createClient } from '@/lib/supabaseServer';
 
 export async function addReceipt(formData: FormData, analysisData: any) {
+    const supabase = createClient();
     const file = formData.get('file') as File;
 
     if (!file) {
@@ -23,10 +25,11 @@ export async function addReceipt(formData: FormData, analysisData: any) {
         taxAmount: typeof analysisData.taxAmount === 'number' ? analysisData.taxAmount : 0,
         totalAmount: typeof analysisData.totalAmount === 'number' ? analysisData.totalAmount : 0,
         imageUrl: '', // Will be set by saveReceipt
+        status: 'Pending',
     };
 
     try {
-        await saveReceipt(newReceipt, buffer);
+        await saveReceipt(newReceipt, buffer, supabase);
     } catch (e: any) {
         console.error("Save to Supabase failed:", e);
         throw new Error("Speichern fehlgeschlagen: " + e.message);
@@ -36,15 +39,18 @@ export async function addReceipt(formData: FormData, analysisData: any) {
 }
 
 export async function fetchReceipts() {
-    return getReceiptsFromStorage();
+    const supabase = createClient();
+    return getReceiptsFromStorage(supabase);
 }
 
 export async function removeReceipt(id: string) {
-    await deleteReceiptFromStorage(id);
+    const supabase = createClient();
+    await deleteReceiptFromStorage(id, supabase);
     revalidatePath('/');
 }
 
 export async function editReceipt(receipt: ReceiptData) {
-    await updateReceipt(receipt);
+    const supabase = createClient();
+    await updateReceipt(receipt, supabase);
     revalidatePath('/');
 }

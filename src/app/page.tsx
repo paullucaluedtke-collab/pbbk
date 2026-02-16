@@ -1,14 +1,19 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import UploadZone from '@/components/UploadZone';
 import ReceiptTable from '@/components/ReceiptTable';
 import ImageModal from '@/components/ImageModal';
 import { ReceiptData } from '@/types/receipt';
 import { generateCSV, downloadCSV } from '@/utils/csvHelper';
 import { generateZipExport } from '@/utils/exportHelper';
-import { Download, Ban, AlertCircle, FileArchive } from 'lucide-react';
+import { Download, Ban, AlertCircle, FileArchive, LogOut } from 'lucide-react';
 import { addReceipt, fetchReceipts, removeReceipt, editReceipt } from '@/app/actions';
+import { verifyReceipt } from '@/app/actions/verifyReceipt';
+import DashboardStats from '@/components/DashboardStats';
+import ExportMenu from '@/components/ExportMenu';
+import OnboardingHint from '@/components/OnboardingHint';
 import styles from './page.module.css';
 import Auth from '@/components/Auth';
 import { supabase } from '@/lib/supabaseClient';
@@ -43,11 +48,16 @@ export default function Home() {
         checkUser();
     }, []);
 
-    // Initial Load from Server (only if user is logged in or we are in local-only mode fallback)
+    const handleLogout = async () => {
+        if (!supabase) return;
+        await supabase.auth.signOut();
+        setUser(null);
+        setReceipts([]); // Clear data on logout
+    };
+
+    // Initial Load from Server
     useEffect(() => {
         if (loadingAuth) return;
-
-        // If supabase is configured but no user -> don't load data yet
         if (supabase && !user) return;
 
         const load = async () => {
@@ -70,7 +80,6 @@ export default function Home() {
         formData.append('file', file);
 
         try {
-            // 1. Analyze via API (Client-side call to use OpenAI)
             const response = await fetch('/api/analyze', {
                 method: 'POST',
                 body: formData,
@@ -82,9 +91,7 @@ export default function Home() {
                 throw new Error(analysisData.error || 'Fehler beim Analysieren des Belegs');
             }
 
-            // 2. Save via Server Action
             const savedReceipt = await addReceipt(formData, analysisData);
-
             setReceipts(prev => [savedReceipt, ...prev]);
         } catch (err: any) {
             console.error(err);
@@ -99,8 +106,12 @@ export default function Home() {
         (updatedReceipts[index] as any)[field] = value;
         setReceipts(updatedReceipts);
 
-        // Save change to server
-        await editReceipt(updatedReceipts[index]);
+        try {
+            await editReceipt(updatedReceipts[index]);
+        } catch (err) {
+            console.error('Error updating receipt:', err);
+            setError('Fehler beim Aktualisieren des Belegs.');
+        }
     };
 
     const handleDelete = async (index: number) => {
@@ -110,6 +121,14 @@ export default function Home() {
         setReceipts(updated);
 
         await removeReceipt(receiptToDelete.id);
+    };
+
+    const handleVerify = async (index: number, status: 'Verified' | 'Rejected') => {
+        const updatedReceipts = [...receipts];
+        updatedReceipts[index].status = status;
+        setReceipts(updatedReceipts);
+
+        await verifyReceipt(updatedReceipts[index].id, status);
     };
 
     const handleDownloadCSV = () => {
@@ -123,7 +142,6 @@ export default function Home() {
 
     const handleClear = async () => {
         if (confirm('Wirklich alle Daten löschen? Dies kann nicht rückgängig gemacht werden.')) {
-            // Sequential delete for safety in MVP (could be batch optimized)
             for (const r of receipts) {
                 await removeReceipt(r.id);
             }
@@ -154,7 +172,12 @@ export default function Home() {
     }
 
     if (loadingAuth) {
-        return <div className="container" style={{ textAlign: 'center', marginTop: '4rem' }}>Lade...</div>;
+        return (
+            <div className="container" style={{ textAlign: 'center', marginTop: '6rem' }}>
+                <div style={{ display: 'inline-block', width: '32px', height: '32px', border: '3px solid #e2e8f0', borderTopColor: '#0f172a', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                <p style={{ marginTop: '1rem', color: '#64748b', fontSize: '0.9rem' }}>Lade Anwendung...</p>
+            </div>
+        );
     }
 
     if (supabase && !user) {
@@ -164,14 +187,39 @@ export default function Home() {
     return (
         <main className={styles.main}>
             <header className={styles.header}>
-                <div className="container">
-                    <h1 className={styles.title}>Bürokratie Killer</h1>
-                    <p className={styles.subtitle}>Der intelligente Rechnungs-Extraktor</p>
+                <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <h1 className={styles.title}>Bürokratie Killer</h1>
+                        <p className={styles.subtitle}>Der intelligente Rechnungs-Extraktor</p>
+                        <div style={{ marginTop: '0.5rem' }}>
+                            <Link href="/invoices" style={{ color: '#0070f3', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                                &rarr; Zur Fakturierung
+                            </Link>
+                            <br />
+                            <Link href="/bank" style={{ color: '#0070f3', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '0.25rem' }}>
+                                &rarr; Zum Bankabgleich
+                            </Link>
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleLogout}
+                        className={styles.secondaryButton}
+                        style={{ padding: '0.5rem 1rem', fontSize: '0.9rem' }}
+                    >
+                        <LogOut size={16} style={{ marginRight: '6px' }} />
+                        Abmelden
+                    </button>
                 </div>
             </header>
 
             <div className="container">
                 <div className={styles.card}>
+                    <DashboardStats receipts={receipts} />
+
+                    <OnboardingHint title="So funktioniert's:" dismissKey="receipt_upload">
+                        Laden Sie ein Foto oder Scan Ihres Belegs hoch – die KI erkennt automatisch Datum, Händler, Betrag und MwSt. Sie können alle Werte danach noch bearbeiten.
+                    </OnboardingHint>
+
                     <UploadZone onFileSelect={handleFileUpload} isProcessing={isProcessing} />
 
                     {error && (
@@ -184,27 +232,26 @@ export default function Home() {
                     <div className={styles.controls}>
                         <h3>Erfasste Belege ({receipts.length})</h3>
                         <div className={styles.controlButtons}>
-                            <button
-                                onClick={handleClear}
-                                disabled={receipts.length === 0}
-                                className={styles.secondaryButton}
-                            >
-                                <Ban size={16} /> Alle löschen
-                            </button>
-                            <button
-                                onClick={handleDownloadCSV}
-                                disabled={receipts.length === 0}
-                                className={styles.primaryButton}
-                            >
-                                <Download size={16} /> CSV
-                            </button>
+                            <ExportMenu />
                             <button
                                 onClick={handleDownloadZip}
                                 disabled={receipts.length === 0}
                                 className={styles.primaryButton}
-                                style={{ backgroundColor: '#2e7d32' }} // Green for emphasis
+                                style={{ backgroundColor: '#2e7d32' }}
                             >
                                 <FileArchive size={16} /> Export für Steuerbüro (ZIP)
+                            </button>
+                            <button
+                                onClick={handleClear}
+                                disabled={receipts.length === 0}
+                                style={{
+                                    background: 'none', border: 'none', cursor: 'pointer',
+                                    color: '#94a3b8', fontSize: '0.75rem', padding: '0.25rem 0.5rem',
+                                    textDecoration: 'underline'
+                                }}
+                                title="Alle Belege unwiderruflich löschen"
+                            >
+                                Alle löschen
                             </button>
                         </div>
                     </div>
@@ -213,6 +260,7 @@ export default function Home() {
                         data={receipts}
                         onUpdate={handleUpdate}
                         onDelete={handleDelete}
+                        onVerify={handleVerify}
                         onViewImage={setSelectedImage}
                     />
                 </div>

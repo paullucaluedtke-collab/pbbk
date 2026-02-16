@@ -49,7 +49,7 @@ export default function UploadZone({ onFileSelect, isProcessing }: UploadZonePro
                 id="file-upload"
                 className={styles.fileInput}
                 onChange={handleChange}
-                accept="image/*"
+                accept="image/*,application/pdf"
                 disabled={isProcessing}
             />
 
@@ -65,7 +65,7 @@ export default function UploadZone({ onFileSelect, isProcessing }: UploadZonePro
                     {isProcessing ? 'Analysiere Beleg...' : 'Beleg hier ablegen'}
                 </h3>
                 <p className={styles.subtitle}>
-                    oder klicken zum Auswählen (JPG, PNG)
+                    oder klicken zum Auswählen (JPG, PNG, PDF)
                 </p>
             </label>
         </div>

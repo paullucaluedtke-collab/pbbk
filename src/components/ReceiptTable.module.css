@@ -82,8 +82,9 @@
 }
 
 .actions {
-    width: 40px;
-    text-align: center;
+    width: 80px;
+    text-align: right;
+    white-space: nowrap;
 }
 
 .colTiny {
@@ -98,10 +99,11 @@
     color: #94a3b8;
     padding: 0.25rem;
     border-radius: 0.25rem;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    margin-left: 4px;
 }
 
 .iconBtn:hover {
@@ -118,6 +120,26 @@
     background: #fef2f2;
 }
 
+.verifyBtn {
+    composes: iconBtn;
+    color: #16a34a;
+}
+
+.verifyBtn:hover {
+    color: #15803d;
+    background: #dcfce7;
+}
+
+.rejectBtn {
+    composes: iconBtn;
+    color: #ef4444;
+}
+
+.rejectBtn:hover {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
 .income {
     color: #16a34a;
     font-weight: 600;
@@ -125,4 +147,33 @@
 
 .expense {
     color: #ea580c;
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    min-width: 60px;
+}
+
+.Verified {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.Rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.Pending {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.rejectedRow td {
+    opacity: 0.6;
 }
