@@ -1,71 +1,117 @@
-import fs from 'fs';
-import path from 'path';
 import { ReceiptData } from '@/types/receipt';
+import { supabase } from '@/lib/supabaseClient';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
-const DB_FILE = path.join(DATA_DIR, 'receipts.json');
+export const getReceipts = async (): Promise<ReceiptData[]> => {
+    if (!supabase) return [];
 
-// Ensure directories exist
-if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-}
+    const { data, error } = await supabase
+        .from('receipts')
+        .select('*')
+        .order('date', { ascending: false });
 
-export const getReceipts = (): ReceiptData[] => {
-    if (!fs.existsSync(DB_FILE)) {
-        return [];
+    if (error) {
+        console.error('Error fetching receipts:', error);
+        throw new Error(error.message);
     }
-    const data = fs.readFileSync(DB_FILE, 'utf-8');
-    try {
-        return JSON.parse(data);
-    } catch (e) {
-        return [];
-    }
+
+    return data.map((r: any) => ({
+        id: r.id,
+        date: r.date,
+        vendor: r.vendor,
+        category: r.category,
+        type: r.type,
+        taxAmount: parseFloat(r.tax_amount),
+        totalAmount: parseFloat(r.total_amount),
+        property: r.property,
+        imageUrl: r.image_url,
+    }));
 };
 
 export const saveReceipt = async (receipt: ReceiptData, imageBuffer: Buffer): Promise<void> => {
-    const receipts = getReceipts();
+    if (!supabase) throw new Error("Supabase not configured");
 
-    // Save Image
-    const filename = `${receipt.id}.jpg`;
-    const filepath = path.join(UPLOADS_DIR, filename);
-    await fs.promises.writeFile(filepath, imageBuffer);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("User not valid session");
 
-    // Update receipt with local path (relative or API route)
-    // We will serve via /api/images/[filename]
-    receipt.imageUrl = `/api/images/${filename}`;
+    // 1. Upload Image to Storage
+    const filename = `${user.id}/${receipt.id}.jpg`;
 
-    receipts.unshift(receipt);
-    await fs.promises.writeFile(DB_FILE, JSON.stringify(receipts, null, 2));
+    const { error: uploadError } = await supabase.storage
+        .from('receipts')
+        .upload(filename, imageBuffer, {
+            contentType: 'image/jpeg',
+            upsert: true
+        });
+
+    if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw new Error('Image upload failed');
+    }
+
+    // Get public URL (assuming bucket is public, or signed URL)
+    // For MVP, enable "Public" on bucket settings or use getPublicUrl
+    const { data: { publicUrl } } = supabase.storage
+        .from('receipts')
+        .getPublicUrl(filename);
+
+    receipt.imageUrl = publicUrl;
+
+    // 2. Insert into DB
+    const { error: dbError } = await supabase
+        .from('receipts')
+        .insert({
+            id: receipt.id,
+            user_id: user.id,
+            date: receipt.date,
+            vendor: receipt.vendor,
+            category: receipt.category,
+            type: receipt.type,
+            tax_amount: receipt.taxAmount,
+            total_amount: receipt.totalAmount,
+            property: receipt.property,
+            image_url: publicUrl
+        });
+
+    if (dbError) {
+        console.error('DB Insert error:', dbError);
+        throw new Error(dbError.message);
+    }
 };
 
 export const deleteReceipt = async (id: string): Promise<void> => {
-    let receipts = getReceipts();
-    const receipt = receipts.find(r => r.id === id);
+    if (!supabase) return;
 
-    if (receipt) {
-        // Try to delete image file
-        const filename = `${id}.jpg`;
-        const filepath = path.join(UPLOADS_DIR, filename);
-        if (fs.existsSync(filepath)) {
-            try {
-                await fs.promises.unlink(filepath);
-            } catch (e) {
-                console.error("Failed to delete image file", e);
-            }
-        }
-    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
-    receipts = receipts.filter(r => r.id !== id);
-    await fs.promises.writeFile(DB_FILE, JSON.stringify(receipts, null, 2));
+    // Delete Image
+    const filename = `${user.id}/${id}.jpg`;
+    await supabase.storage.from('receipts').remove([filename]);
+
+    // Delete Record
+    const { error } = await supabase
+        .from('receipts')
+        .delete()
+        .eq('id', id);
+
+    if (error) console.error('Delete error', error);
 };
 
 export const updateReceipt = async (updatedReceipt: ReceiptData): Promise<void> => {
-    let receipts = getReceipts();
-    const index = receipts.findIndex(r => r.id === updatedReceipt.id);
+    if (!supabase) return;
 
-    if (index !== -1) {
-        receipts[index] = updatedReceipt;
-        await fs.promises.writeFile(DB_FILE, JSON.stringify(receipts, null, 2));
-    }
+    const { error } = await supabase
+        .from('receipts')
+        .update({
+            date: updatedReceipt.date,
+            vendor: updatedReceipt.vendor,
+            category: updatedReceipt.category,
+            type: updatedReceipt.type,
+            tax_amount: updatedReceipt.taxAmount,
+            total_amount: updatedReceipt.totalAmount,
+            property: updatedReceipt.property,
+        })
+        .eq('id', updatedReceipt.id);
+
+    if (error) console.error('Update error', error);
 };

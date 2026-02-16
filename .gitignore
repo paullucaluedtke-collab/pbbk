@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # dependencies
 /node_modules
 /.pnp
@@ -24,6 +25,13 @@ yarn-error.log*
 
 # local env files
 .env*.local
+=======
+node_modules
+
+# local env files
+.env*.local
+env.local
+>>>>>>> 67a1883dd69b8115f145d7fed00a64cf209ec337
 
 # vercel
 .vercel
@@ -31,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+<<<<<<< HEAD
+=======
+
+# data (Supabase migration - ignore local data)
+data/
+>>>>>>> 67a1883dd69b8115f145d7fed00a64cf209ec337

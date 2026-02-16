@@ -25,7 +25,12 @@ export async function addReceipt(formData: FormData, analysisData: any) {
         imageUrl: '', // Will be set by saveReceipt
     };
 
-    await saveReceipt(newReceipt, buffer);
+    try {
+        await saveReceipt(newReceipt, buffer);
+    } catch (e: any) {
+        console.error("Save to Supabase failed:", e);
+        throw new Error("Speichern fehlgeschlagen: " + e.message);
+    }
     revalidatePath('/');
     return newReceipt;
 }

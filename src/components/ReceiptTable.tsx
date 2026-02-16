@@ -78,24 +78,23 @@ export default function ReceiptTable({ data, onUpdate, onDelete, onViewImage }: 
                                 />
                             </td>
                             <td>
-                                <input
-                                    type="text"
+                                <select
                                     value={receipt.category}
                                     onChange={(e) => onUpdate(index, 'category', e.target.value)}
                                     className={styles.input}
-                                    placeholder="Kategorie"
-                                    list="categories"
-                                />
-                                <datalist id="categories">
-                                    <option value="Verpflegung" />
-                                    <option value="Reise" />
-                                    <option value="Werkzeug" />
-                                    <option value="Büro" />
-                                    <option value="Material" />
-                                    <option value="KFZ" />
-                                    <option value="Vermietung und Verpachtung" />
-                                    <option value="Sonstiges" />
-                                </datalist>
+                                >
+                                    <option value="Sonstiges">Sonstiges</option>
+                                    <option value="Büromat./Porto/Tel.">Büromat./Porto/Tel.</option>
+                                    <option value="Fortbildung">Fortbildung</option>
+                                    <option value="KFZ-Kosten">KFZ-Kosten</option>
+                                    <option value="Miete/Nebenkosten">Miete/Nebenkosten</option>
+                                    <option value="Reisekosten">Reisekosten</option>
+                                    <option value="Bewirtung">Bewirtung</option>
+                                    <option value="Wareneingang">Wareneingang</option>
+                                    <option value="Fremdleistung">Fremdleistung</option>
+                                    <option value="Geldtransit">Geldtransit</option>
+                                    <option value="Privatentnahme">Privatentnahme</option>
+                                </select>
                             </td>
                             <td>
                                 <input
@@ -103,8 +102,8 @@ export default function ReceiptTable({ data, onUpdate, onDelete, onViewImage }: 
                                     value={receipt.property || ''}
                                     onChange={(e) => onUpdate(index, 'property', e.target.value)}
                                     className={styles.input}
-                                    placeholder={receipt.category === 'Vermietung und Verpachtung' ? 'Objekt/Adresse' : '-'}
-                                    disabled={receipt.category !== 'Vermietung und Verpachtung'}
+                                    placeholder={receipt.category === 'Miete/Nebenkosten' ? 'Objekt/Adresse' : '-'}
+                                    disabled={receipt.category !== 'Miete/Nebenkosten'}
                                 />
                             </td>
                             <td>
