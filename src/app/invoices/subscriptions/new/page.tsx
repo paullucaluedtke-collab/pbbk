@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createSubscription } from '@/app/actions/subscriptionActions';
-import { getCustomers } from '@/app/actions/invoiceActions'; // Reuse existing
+import { getCustomers } from '@/app/actions/customerActions';
 import Link from 'next/link';
 import styles from '@/app/page.module.css';
 
