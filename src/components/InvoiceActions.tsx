@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { Invoice } from '@/types/invoice';
+import { CompanySettings } from '@/types/companySettings';
 import { generateInvoicePDF } from '@/utils/pdfGenerator';
 import { deleteInvoice, updateInvoiceStatus } from '@/app/actions/invoiceActions';
+import { getCompanySettings } from '@/app/actions/companyActions';
 import { Download, Trash2, Loader2, CheckCircle, Send, MoreVertical } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -11,10 +13,22 @@ export default function InvoiceActions({ invoice }: { invoice: Invoice }) {
     const [deleting, setDeleting] = useState(false);
     const [updating, setUpdating] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [companyCache, setCompanyCache] = useState<CompanySettings | null>(null);
     const router = useRouter();
 
-    const handleDownload = () => {
-        generateInvoicePDF(invoice);
+    const handleDownload = async () => {
+        try {
+            // Fetch company settings (cached after first call)
+            let settings = companyCache;
+            if (!settings) {
+                settings = await getCompanySettings();
+                if (settings) setCompanyCache(settings);
+            }
+            await generateInvoicePDF(invoice, settings);
+        } catch (err) {
+            console.error('PDF generation failed:', err);
+            alert('Fehler beim Erstellen der PDF. Bitte versuchen Sie es erneut.');
+        }
     };
 
     const handleDelete = async () => {
@@ -48,20 +62,20 @@ export default function InvoiceActions({ invoice }: { invoice: Invoice }) {
     const statusActions = [] as { label: string; status: Invoice['status']; icon: React.ReactNode; color: string }[];
 
     if (invoice.status === 'Draft') {
-        statusActions.push({ label: 'Als versendet markieren', status: 'Sent', icon: <Send size={14} />, color: '#2563eb' });
+        statusActions.push({ label: 'Als versendet markieren', status: 'Sent', icon: <Send size={14} />, color: 'var(--info)' });
     }
     if (invoice.status === 'Draft' || invoice.status === 'Sent' || invoice.status === 'Overdue') {
-        statusActions.push({ label: 'Als bezahlt markieren', status: 'Paid', icon: <CheckCircle size={14} />, color: '#16a34a' });
+        statusActions.push({ label: 'Als bezahlt markieren', status: 'Paid', icon: <CheckCircle size={14} />, color: 'var(--success)' });
     }
 
     return (
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', position: 'relative' }}>
             <button
                 onClick={handleDownload}
-                style={{ padding: '0.25rem', border: '1px solid #e5e7eb', borderRadius: '4px', background: '#fff', cursor: 'pointer' }}
+                style={{ padding: '0.25rem', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--secondary)', cursor: 'pointer' }}
                 title="PDF herunterladen"
             >
-                <Download size={16} color="#4b5563" />
+                <Download size={16} color="var(--muted-foreground)" />
             </button>
 
             {statusActions.length > 0 && (
@@ -69,10 +83,10 @@ export default function InvoiceActions({ invoice }: { invoice: Invoice }) {
                     <button
                         onClick={() => setMenuOpen(!menuOpen)}
                         disabled={updating}
-                        style={{ padding: '0.25rem', border: '1px solid #e5e7eb', borderRadius: '4px', background: '#fff', cursor: 'pointer' }}
+                        style={{ padding: '0.25rem', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--secondary)', cursor: 'pointer' }}
                         title="Status ändern"
                     >
-                        {updating ? <Loader2 size={16} color="#6b7280" style={{ animation: 'spin 1s linear infinite' }} /> : <MoreVertical size={16} color="#6b7280" />}
+                        {updating ? <Loader2 size={16} color="var(--muted-foreground)" style={{ animation: 'spin 1s linear infinite' }} /> : <MoreVertical size={16} color="var(--muted-foreground)" />}
                     </button>
 
                     {menuOpen && (
@@ -80,8 +94,8 @@ export default function InvoiceActions({ invoice }: { invoice: Invoice }) {
                             <div onClick={() => setMenuOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 10 }} />
                             <div style={{
                                 position: 'absolute', right: 0, top: '100%', marginTop: '4px',
-                                background: 'white', border: '1px solid #e2e8f0', borderRadius: '8px',
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 20,
+                                background: 'var(--secondary)', border: '1px solid var(--border)', borderRadius: '8px',
+                                boxShadow: 'var(--shadow-lg)', zIndex: 20,
                                 minWidth: '220px', overflow: 'hidden'
                             }}>
                                 {statusActions.map(a => (
@@ -94,7 +108,7 @@ export default function InvoiceActions({ invoice }: { invoice: Invoice }) {
                                             border: 'none', background: 'none', cursor: 'pointer',
                                             fontSize: '0.825rem', color: a.color, textAlign: 'left'
                                         }}
-                                        onMouseEnter={e => (e.currentTarget.style.background = '#f8fafc')}
+                                        onMouseEnter={e => (e.currentTarget.style.background = 'var(--muted)')}
                                         onMouseLeave={e => (e.currentTarget.style.background = 'none')}
                                     >
                                         {a.icon} {a.label}
@@ -109,10 +123,10 @@ export default function InvoiceActions({ invoice }: { invoice: Invoice }) {
             <button
                 onClick={handleDelete}
                 disabled={deleting}
-                style={{ padding: '0.25rem', border: '1px solid #fecaca', borderRadius: '4px', background: '#fff', cursor: deleting ? 'wait' : 'pointer' }}
+                style={{ padding: '0.25rem', border: '1px solid var(--danger-bg)', borderRadius: '4px', background: 'var(--secondary)', cursor: deleting ? 'wait' : 'pointer' }}
                 title="Rechnung löschen"
             >
-                {deleting ? <Loader2 size={16} color="#ef4444" style={{ animation: 'spin 1s linear infinite' }} /> : <Trash2 size={16} color="#ef4444" />}
+                {deleting ? <Loader2 size={16} color="var(--danger)" style={{ animation: 'spin 1s linear infinite' }} /> : <Trash2 size={16} color="var(--danger)" />}
             </button>
         </div>
     );

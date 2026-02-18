@@ -70,7 +70,7 @@ export default function ReceiptTable({ data, onUpdate, onDelete, onViewImage, on
         <div>
             {/* Search Bar */}
             <div style={{ marginBottom: '1rem', position: 'relative' }}>
-                <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)' }} />
                 <input
                     type="text"
                     placeholder="Belege durchsuchen (Händler, Kategorie, Datum, Betrag)..."
@@ -78,12 +78,12 @@ export default function ReceiptTable({ data, onUpdate, onDelete, onViewImage, on
                     onChange={e => setSearch(e.target.value)}
                     style={{
                         width: '100%', padding: '0.6rem 0.75rem 0.6rem 2.25rem',
-                        borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '0.875rem',
-                        outline: 'none'
+                        borderRadius: '6px', border: '1px solid var(--border)', fontSize: '0.875rem',
+                        outline: 'none', background: 'var(--background)', color: 'var(--foreground)'
                     }}
                 />
                 {search && (
-                    <span style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', fontSize: '0.75rem', color: '#94a3b8' }}>
+                    <span style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
                         {filtered.length} von {data.length}
                     </span>
                 )}

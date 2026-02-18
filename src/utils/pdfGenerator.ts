@@ -1,20 +1,34 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Invoice } from '@/types/invoice';
+import { CompanySettings } from '@/types/companySettings';
 
-export const generateInvoicePDF = (invoice: Invoice) => {
+export const generateInvoicePDF = (invoice: Invoice, company?: CompanySettings | null) => {
     const doc = new jsPDF();
 
     // Config
     const pageWidth = doc.internal.pageSize.width;
     const margin = 20; // 20mm left margin (DIN 5008 standard usually 25, but 20 is safe)
 
+    // Fallback company defaults
+    const c = {
+        company_name: company?.company_name || 'Ihre Firma GmbH',
+        address_line1: company?.address_line1 || 'Musterstraße 123',
+        city_zip: company?.city_zip || '12345 Musterstadt',
+        phone: company?.phone || '0123 / 456 789 0',
+        email: company?.email || 'info@ihrefirma.de',
+        website: company?.website || 'www.ihrefirma.de',
+        bank_name: company?.bank_name || 'Musterbank',
+        iban: company?.iban || 'DE00 1234 5678 9012 3456 78',
+        bic: company?.bic || '',
+        tax_id: company?.tax_id || 'DE 123 456 789',
+    };
+
     // --- Sender Line (Small, above address) ---
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(100);
-    // Placeholder - This should come from user settings / DB
-    const senderLine = "Ihre Firma GmbH • Musterstraße 123 • 12345 Musterstadt";
+    const senderLine = `${c.company_name} • ${c.address_line1} • ${c.city_zip}`;
     doc.text(senderLine, margin, 45);
 
     // --- Recipient Address ---
@@ -156,19 +170,19 @@ export const generateInvoicePDF = (invoice: Invoice) => {
     const col3 = margin + 120;
 
     // Column 1: Company
-    doc.text("Ihre Firma GmbH", col1, footerLine1Y);
-    doc.text("Musterstraße 123", col1, footerLine1Y + 4);
-    doc.text("12345 Musterstadt", col1, footerLine1Y + 8);
+    doc.text(c.company_name, col1, footerLine1Y);
+    doc.text(c.address_line1, col1, footerLine1Y + 4);
+    doc.text(c.city_zip, col1, footerLine1Y + 8);
 
     // Column 2: Contact
-    doc.text("Telefon: 0123 / 456 789 0", col2, footerLine1Y);
-    doc.text("E-Mail: info@ihrefirma.de", col2, footerLine1Y + 4);
-    doc.text("Web: www.ihrefirma.de", col2, footerLine1Y + 8);
+    doc.text(`Telefon: ${c.phone}`, col2, footerLine1Y);
+    doc.text(`E-Mail: ${c.email}`, col2, footerLine1Y + 4);
+    doc.text(`Web: ${c.website}`, col2, footerLine1Y + 8);
 
     // Column 3: Bank / Tax
-    doc.text("Bank: Musterbank", col3, footerLine1Y);
-    doc.text("IBAN: DE00 1234 5678 9012 3456 78", col3, footerLine1Y + 4);
-    doc.text("USt-IdNr.: DE 123 456 789", col3, footerLine1Y + 8);
+    doc.text(`Bank: ${c.bank_name}`, col3, footerLine1Y);
+    doc.text(`IBAN: ${c.iban}`, col3, footerLine1Y + 4);
+    doc.text(`USt-IdNr.: ${c.tax_id}`, col3, footerLine1Y + 8);
 
     doc.save(`Rechnung_${invoice.invoice_number}.pdf`);
 };

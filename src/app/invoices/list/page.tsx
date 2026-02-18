@@ -20,31 +20,31 @@ export default async function InvoiceListPage() {
 
             <div className={styles.card} style={{ padding: 0, overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead style={{ backgroundColor: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                    <thead style={{ backgroundColor: 'var(--table-header-bg)', borderBottom: '1px solid var(--border)' }}>
                         <tr>
-                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 600, color: '#374151' }}>Nr.</th>
-                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 600, color: '#374151' }}>Kunde</th>
-                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 600, color: '#374151' }}>Datum</th>
-                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 600, color: '#374151' }}>Status</th>
-                            <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 600, color: '#374151' }}>Betrag</th>
-                            <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 600, color: '#374151' }}>Aktionen</th>
+                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 600, color: 'var(--secondary-foreground)' }}>Nr.</th>
+                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 600, color: 'var(--secondary-foreground)' }}>Kunde</th>
+                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 600, color: 'var(--secondary-foreground)' }}>Datum</th>
+                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.875rem', fontWeight: 600, color: 'var(--secondary-foreground)' }}>Status</th>
+                            <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 600, color: 'var(--secondary-foreground)' }}>Betrag</th>
+                            <th style={{ padding: '1rem', textAlign: 'right', fontSize: '0.875rem', fontWeight: 600, color: 'var(--secondary-foreground)' }}>Aktionen</th>
                         </tr>
                     </thead>
                     <tbody>
                         {invoices.length === 0 ? (
                             <tr>
-                                <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+                                <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
                                     Keine Rechnungen gefunden.
                                 </td>
                             </tr>
                         ) : (
                             invoices.map((invoice) => (
-                                <tr key={invoice.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                                    <td style={{ padding: '1rem', color: '#111827', fontWeight: 500 }}>{invoice.invoice_number}</td>
-                                    <td style={{ padding: '1rem', color: '#374151' }}>
+                                <tr key={invoice.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                                    <td style={{ padding: '1rem', color: 'var(--foreground)', fontWeight: 500 }}>{invoice.invoice_number}</td>
+                                    <td style={{ padding: '1rem', color: 'var(--secondary-foreground)' }}>
                                         {invoice.customer?.name || 'Unbekannt'}
                                     </td>
-                                    <td style={{ padding: '1rem', color: '#6b7280' }}>{new Date(invoice.date).toLocaleDateString('de-DE')}</td>
+                                    <td style={{ padding: '1rem', color: 'var(--muted-foreground)' }}>{new Date(invoice.date).toLocaleDateString('de-DE')}</td>
                                     <td style={{ padding: '1rem' }}>
                                         <span style={{
                                             padding: '0.25rem 0.5rem',
@@ -52,20 +52,20 @@ export default async function InvoiceListPage() {
                                             fontSize: '0.75rem',
                                             fontWeight: 500,
                                             backgroundColor:
-                                                invoice.status === 'Paid' ? '#d1fae5' :
-                                                    invoice.status === 'Sent' ? '#dbeafe' :
-                                                        invoice.status === 'Overdue' ? '#fee2e2' : '#f3f4f6',
+                                                invoice.status === 'Paid' ? 'var(--success-bg)' :
+                                                    invoice.status === 'Sent' ? 'var(--info-bg)' :
+                                                        invoice.status === 'Overdue' ? 'var(--danger-bg)' : 'var(--muted)',
                                             color:
-                                                invoice.status === 'Paid' ? '#065f46' :
-                                                    invoice.status === 'Sent' ? '#1e40af' :
-                                                        invoice.status === 'Overdue' ? '#991b1b' : '#374151',
+                                                invoice.status === 'Paid' ? 'var(--success-text)' :
+                                                    invoice.status === 'Sent' ? 'var(--info-text)' :
+                                                        invoice.status === 'Overdue' ? 'var(--danger-text)' : 'var(--secondary-foreground)',
                                         }}>
                                             {invoice.status === 'Paid' ? 'Bezahlt' :
                                                 invoice.status === 'Sent' ? 'Versendet' :
                                                     invoice.status === 'Overdue' ? 'Überfällig' : 'Entwurf'}
                                         </span>
                                     </td>
-                                    <td style={{ padding: '1rem', textAlign: 'right', fontWeight: 600, color: '#111827' }}>
+                                    <td style={{ padding: '1rem', textAlign: 'right', fontWeight: 600, color: 'var(--foreground)' }}>
                                         {invoice.total_amount?.toFixed(2)} €
                                     </td>
                                     <td style={{ padding: '1rem', textAlign: 'right' }}>

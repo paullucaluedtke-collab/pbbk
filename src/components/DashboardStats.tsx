@@ -73,7 +73,7 @@ export default function DashboardStats({ receipts }: Props) {
         <div style={{ marginBottom: '2rem' }}>
             {/* Filter Row */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', fontSize: '0.875rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>
                     <Filter size={16} />
                     <span style={{ fontWeight: 500 }}>Zeitraum:</span>
                 </div>
@@ -83,10 +83,10 @@ export default function DashboardStats({ receipts }: Props) {
                     style={{
                         padding: '0.4rem 0.75rem',
                         borderRadius: '6px',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid var(--border)',
                         fontSize: '0.875rem',
-                        color: '#0f172a',
-                        background: 'white',
+                        color: 'var(--foreground)',
+                        background: 'var(--secondary)',
                         cursor: 'pointer',
                         outline: 'none'
                     }}
@@ -101,37 +101,37 @@ export default function DashboardStats({ receipts }: Props) {
             {/* Stats Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                 {/* Income */}
-                <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', color: '#64748b' }}>
-                        <ArrowUpCircle size={18} color="#16a34a" />
+                <div style={{ background: 'var(--secondary)', padding: '1.5rem', borderRadius: '8px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', color: 'var(--muted-foreground)' }}>
+                        <ArrowUpCircle size={18} color="var(--success)" />
                         <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>Einnahmen (Netto)</span>
                     </div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a' }}>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--foreground)' }}>
                         {stats.incomeNet.toFixed(2)} €
                     </div>
                 </div>
 
                 {/* Expenses */}
-                <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', color: '#64748b' }}>
-                        <ArrowDownCircle size={18} color="#ef4444" />
+                <div style={{ background: 'var(--secondary)', padding: '1.5rem', borderRadius: '8px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', color: 'var(--muted-foreground)' }}>
+                        <ArrowDownCircle size={18} color="var(--danger)" />
                         <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>Ausgaben (Netto)</span>
                     </div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a' }}>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--foreground)' }}>
                         {stats.expenseNet.toFixed(2)} €
                     </div>
                 </div>
 
                 {/* Tax */}
-                <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', color: '#64748b' }}>
-                        <Banknote size={18} color="#2563eb" />
+                <div style={{ background: 'var(--secondary)', padding: '1.5rem', borderRadius: '8px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', color: 'var(--muted-foreground)' }}>
+                        <Banknote size={18} color="var(--info)" />
                         <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>USt-Zahllast (Vorschau)</span>
                     </div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: stats.taxTraffic > 0 ? '#ef4444' : '#16a34a' }}>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: stats.taxTraffic > 0 ? 'var(--danger)' : 'var(--success)' }}>
                         {stats.taxTraffic.toFixed(2)} €
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', marginTop: '0.25rem' }}>
                         {stats.taxPayable.toFixed(2)}€ (USt) - {stats.taxReceivable.toFixed(2)}€ (VSt)
                     </div>
                 </div>

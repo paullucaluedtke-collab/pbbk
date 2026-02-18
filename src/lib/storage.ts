@@ -55,7 +55,7 @@ export const getReceipts = async (supabaseClient?: any): Promise<ReceiptData[]> 
     return receiptsWithSignedUrls;
 };
 
-export const saveReceipt = async (receipt: ReceiptData, imageBuffer: Buffer, supabaseClient?: any): Promise<void> => {
+export const saveReceipt = async (receipt: ReceiptData, imageBuffer: Buffer, supabaseClient?: any, fileHash?: string): Promise<void> => {
     const client = supabaseClient || supabase;
     if (!client) throw new Error("Supabase not configured");
 
@@ -93,21 +93,27 @@ export const saveReceipt = async (receipt: ReceiptData, imageBuffer: Buffer, sup
     receipt.imageUrl = publicUrl;
 
     // 2. Insert into DB
+    const insertData: any = {
+        id: receipt.id,
+        user_id: user.id,
+        date: receipt.date,
+        vendor: receipt.vendor,
+        category: receipt.category,
+        type: receipt.type,
+        tax_amount: receipt.taxAmount,
+        total_amount: receipt.totalAmount,
+        property: receipt.property,
+        image_url: publicUrl,
+        status: receipt.status || 'Pending'
+    };
+
+    if (fileHash) {
+        insertData.file_hash = fileHash;
+    }
+
     const { error: dbError } = await client
         .from('receipts')
-        .insert({
-            id: receipt.id,
-            user_id: user.id,
-            date: receipt.date,
-            vendor: receipt.vendor,
-            category: receipt.category,
-            type: receipt.type,
-            tax_amount: receipt.taxAmount,
-            total_amount: receipt.totalAmount,
-            property: receipt.property,
-            image_url: publicUrl,
-            status: receipt.status || 'Pending'
-        });
+        .insert(insertData);
 
     if (dbError) {
         console.error('DB Insert error:', dbError);

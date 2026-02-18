@@ -16,7 +16,7 @@
 
 .modal {
     position: relative;
-    background: white;
+    background: var(--secondary);
     border-radius: var(--radius);
     max-width: 90vw;
     max-height: 90vh;

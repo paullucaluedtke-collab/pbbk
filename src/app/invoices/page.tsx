@@ -40,8 +40,20 @@ export default function InvoicesDashboard() {
     const paidTotal = sumTotal(paidInvoices);
 
     if (loading) {
-        return <div style={{ textAlign: 'center', marginTop: '4rem', color: '#888' }}>Lade Rechnungsdaten...</div>;
+        return <div style={{ textAlign: 'center', marginTop: '4rem', color: 'var(--muted-foreground)' }}>Lade Rechnungsdaten...</div>;
     }
+
+    const cardStyle: React.CSSProperties = {
+        padding: '1.5rem', borderRadius: '8px', border: '1px solid var(--border)',
+        boxShadow: 'var(--shadow-sm)', background: 'var(--secondary)'
+    };
+
+    const quickActionStyle: React.CSSProperties = {
+        display: 'flex', alignItems: 'center', gap: '0.75rem',
+        padding: '1.25rem', borderRadius: '8px', border: '1px solid var(--border)',
+        textDecoration: 'none', color: 'var(--foreground)', background: 'var(--secondary)',
+        boxShadow: 'var(--shadow-sm)', transition: 'box-shadow 0.15s, border-color 0.15s'
+    };
 
     return (
         <div>
@@ -54,123 +66,103 @@ export default function InvoicesDashboard() {
 
             {/* Stats Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-                <div style={{ padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', background: 'white' }}>
+                <div style={cardStyle}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                        <Clock size={18} color="#2563eb" />
-                        <h3 style={{ margin: 0, color: '#64748b', fontSize: '0.875rem', fontWeight: 500 }}>Offene Rechnungen</h3>
+                        <Clock size={18} color="var(--info)" />
+                        <h3 style={{ margin: 0, color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>Offene Rechnungen</h3>
                     </div>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0.25rem 0 0 0', color: '#0f172a' }}>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0.25rem 0 0 0', color: 'var(--foreground)' }}>
                         {openTotal.toFixed(2)} €
                     </p>
-                    <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0.25rem 0 0 0' }}>{openInvoices.length} Rechnungen</p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', margin: '0.25rem 0 0 0' }}>{openInvoices.length} Rechnungen</p>
                 </div>
 
-                <div style={{ padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', background: 'white' }}>
+                <div style={cardStyle}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                        <AlertTriangle size={18} color="#ef4444" />
-                        <h3 style={{ margin: 0, color: '#64748b', fontSize: '0.875rem', fontWeight: 500 }}>Überfällig</h3>
+                        <AlertTriangle size={18} color="var(--danger)" />
+                        <h3 style={{ margin: 0, color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>Überfällig</h3>
                     </div>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0.25rem 0 0 0', color: overdueTotal > 0 ? '#ef4444' : '#0f172a' }}>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0.25rem 0 0 0', color: overdueTotal > 0 ? 'var(--danger)' : 'var(--foreground)' }}>
                         {overdueTotal.toFixed(2)} €
                     </p>
-                    <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0.25rem 0 0 0' }}>{overdueInvoices.length} Rechnungen</p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', margin: '0.25rem 0 0 0' }}>{overdueInvoices.length} Rechnungen</p>
                 </div>
 
-                <div style={{ padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', background: 'white' }}>
+                <div style={cardStyle}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                        <CheckCircle size={18} color="#16a34a" />
-                        <h3 style={{ margin: 0, color: '#64748b', fontSize: '0.875rem', fontWeight: 500 }}>Bezahlt</h3>
+                        <CheckCircle size={18} color="var(--success)" />
+                        <h3 style={{ margin: 0, color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>Bezahlt</h3>
                     </div>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0.25rem 0 0 0', color: '#16a34a' }}>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0.25rem 0 0 0', color: 'var(--success)' }}>
                         {paidTotal.toFixed(2)} €
                     </p>
-                    <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0.25rem 0 0 0' }}>{paidInvoices.length} Rechnungen</p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', margin: '0.25rem 0 0 0' }}>{paidInvoices.length} Rechnungen</p>
                 </div>
 
-                <div style={{ padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', background: 'white' }}>
+                <div style={cardStyle}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                        <FileText size={18} color="#8b5cf6" />
-                        <h3 style={{ margin: 0, color: '#64748b', fontSize: '0.875rem', fontWeight: 500 }}>Gesamt</h3>
+                        <FileText size={18} color="var(--accent-foreground)" />
+                        <h3 style={{ margin: 0, color: 'var(--muted-foreground)', fontSize: '0.875rem', fontWeight: 500 }}>Gesamt</h3>
                     </div>
-                    <p style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0.25rem 0 0 0', color: '#0f172a' }}>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 700, margin: '0.25rem 0 0 0', color: 'var(--foreground)' }}>
                         {sumTotal(invoices).toFixed(2)} €
                     </p>
-                    <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0.25rem 0 0 0' }}>{invoices.length} Rechnungen</p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', margin: '0.25rem 0 0 0' }}>{invoices.length} Rechnungen</p>
                 </div>
             </div>
 
             {/* Quick Actions */}
-            <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: '#334155' }}>Schnellzugriff</h2>
+            <h2 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--secondary-foreground)' }}>Schnellzugriff</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-                <Link href="/invoices/create" style={{
-                    display: 'flex', alignItems: 'center', gap: '0.75rem',
-                    padding: '1.25rem', borderRadius: '8px', border: '1px solid #e2e8f0',
-                    textDecoration: 'none', color: '#0f172a', background: 'white',
-                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)', transition: 'box-shadow 0.15s, border-color 0.15s'
-                }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+                <Link href="/invoices/create" style={quickActionStyle}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--shadow-md)'; e.currentTarget.style.borderColor = 'var(--ring)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
                 >
-                    <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <FilePlus size={20} color="#2563eb" />
+                    <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'var(--info-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <FilePlus size={20} color="var(--info)" />
                     </div>
                     <div>
                         <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Neue Rechnung</div>
-                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Rechnung erstellen & als PDF exportieren</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>Rechnung erstellen & als PDF exportieren</div>
                     </div>
                 </Link>
 
-                <Link href="/invoices/customers" style={{
-                    display: 'flex', alignItems: 'center', gap: '0.75rem',
-                    padding: '1.25rem', borderRadius: '8px', border: '1px solid #e2e8f0',
-                    textDecoration: 'none', color: '#0f172a', background: 'white',
-                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)', transition: 'box-shadow 0.15s, border-color 0.15s'
-                }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+                <Link href="/invoices/customers" style={quickActionStyle}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--shadow-md)'; e.currentTarget.style.borderColor = 'var(--ring)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
                 >
-                    <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: '#f0fdf4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Users size={20} color="#16a34a" />
+                    <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'var(--success-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Users size={20} color="var(--success)" />
                     </div>
                     <div>
                         <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Kunden verwalten</div>
-                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Kundenstamm anlegen & bearbeiten</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>Kundenstamm anlegen & bearbeiten</div>
                     </div>
                 </Link>
 
-                <Link href="/invoices/subscriptions" style={{
-                    display: 'flex', alignItems: 'center', gap: '0.75rem',
-                    padding: '1.25rem', borderRadius: '8px', border: '1px solid #e2e8f0',
-                    textDecoration: 'none', color: '#0f172a', background: 'white',
-                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)', transition: 'box-shadow 0.15s, border-color 0.15s'
-                }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+                <Link href="/invoices/subscriptions" style={quickActionStyle}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--shadow-md)'; e.currentTarget.style.borderColor = 'var(--ring)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
                 >
-                    <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Repeat size={20} color="#d97706" />
+                    <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'var(--warning-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Repeat size={20} color="var(--warning)" />
                     </div>
                     <div>
                         <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Abo-Rechnungen</div>
-                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Wiederkehrende Rechnungen automatisieren</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>Wiederkehrende Rechnungen automatisieren</div>
                     </div>
                 </Link>
 
-                <Link href="/invoices/list" style={{
-                    display: 'flex', alignItems: 'center', gap: '0.75rem',
-                    padding: '1.25rem', borderRadius: '8px', border: '1px solid #e2e8f0',
-                    textDecoration: 'none', color: '#0f172a', background: 'white',
-                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)', transition: 'box-shadow 0.15s, border-color 0.15s'
-                }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+                <Link href="/invoices/list" style={quickActionStyle}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--shadow-md)'; e.currentTarget.style.borderColor = 'var(--ring)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
                 >
-                    <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: '#f5f3ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <FileText size={20} color="#7c3aed" />
+                    <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <FileText size={20} color="var(--accent-foreground)" />
                     </div>
                     <div>
                         <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Alle Rechnungen</div>
-                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Übersicht aller erstellten Rechnungen</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>Übersicht aller erstellten Rechnungen</div>
                     </div>
                 </Link>
             </div>

@@ -64,11 +64,11 @@ export default function Auth() {
         <div className={styles.card} style={{ maxWidth: '420px', margin: '4rem auto', padding: '2rem' }}>
             {/* Branding */}
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                <div style={{ width: '56px', height: '56px', borderRadius: '14px', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.75rem' }}>
-                    <FileText size={28} color="white" />
+                <div style={{ width: '56px', height: '56px', borderRadius: '14px', background: 'linear-gradient(135deg, var(--primary) 0%, var(--muted-foreground) 100%)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.75rem' }}>
+                    <FileText size={28} color="var(--primary-foreground)" />
                 </div>
-                <h1 style={{ fontSize: '1.4rem', fontWeight: 700, margin: '0 0 0.25rem 0', color: '#0f172a' }}>Bürokratie Killer</h1>
-                <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>Belege · Rechnungen · Buchhaltung</p>
+                <h1 style={{ fontSize: '1.4rem', fontWeight: 700, margin: '0 0 0.25rem 0', color: 'var(--foreground)' }}>Bürokratie Killer</h1>
+                <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)', margin: 0 }}>Belege · Rechnungen · Buchhaltung</p>
             </div>
 
             <h2 style={{ marginBottom: '1.25rem', textAlign: 'center', fontSize: '1.1rem' }}>
@@ -84,11 +84,11 @@ export default function Auth() {
                     style={{
                         background: 'none',
                         border: 'none',
-                        borderBottom: mode === 'login' ? '2px solid #0070f3' : '2px solid transparent',
+                        borderBottom: mode === 'login' ? '2px solid var(--link)' : '2px solid transparent',
                         padding: '0.5rem',
                         cursor: 'pointer',
                         fontWeight: mode === 'login' ? 'bold' : 'normal',
-                        color: mode === 'login' ? '#0070f3' : '#666'
+                        color: mode === 'login' ? 'var(--link)' : 'var(--muted-foreground)'
                     }}
                 >
                     Passwort
@@ -99,11 +99,11 @@ export default function Auth() {
                     style={{
                         background: 'none',
                         border: 'none',
-                        borderBottom: mode === 'magic_link' ? '2px solid #0070f3' : '2px solid transparent',
+                        borderBottom: mode === 'magic_link' ? '2px solid var(--link)' : '2px solid transparent',
                         padding: '0.5rem',
                         cursor: 'pointer',
                         fontWeight: mode === 'magic_link' ? 'bold' : 'normal',
-                        color: mode === 'magic_link' ? '#0070f3' : '#666'
+                        color: mode === 'magic_link' ? 'var(--link)' : 'var(--muted-foreground)'
                     }}
                 >
                     Magic Link
@@ -112,28 +112,28 @@ export default function Auth() {
 
             <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>E-Mail</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: 'var(--foreground)' }}>E-Mail</label>
                     <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="deine@email.com"
                         className={styles.input}
-                        style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #ddd' }}
+                        style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--foreground)' }}
                         required
                     />
                 </div>
 
                 {mode !== 'magic_link' && (
                     <div style={{ marginBottom: '1rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Passwort</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: 'var(--foreground)' }}>Passwort</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="********"
                             className={styles.input}
-                            style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #ddd' }}
+                            style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--foreground)' }}
                             required
                         />
                     </div>
@@ -158,14 +158,14 @@ export default function Auth() {
                 </button>
 
                 {mode !== 'magic_link' && (
-                    <div style={{ textAlign: 'center', fontSize: '0.9rem' }}>
+                    <div style={{ textAlign: 'center', fontSize: '0.9rem', color: 'var(--muted-foreground)' }}>
                         {mode === 'login' ? (
                             <>
                                 Noch kein Konto?{' '}
                                 <button
                                     type="button"
                                     onClick={() => setMode('signup')}
-                                    style={{ background: 'none', border: 'none', color: '#0070f3', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                                    style={{ background: 'none', border: 'none', color: 'var(--link)', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                                 >
                                     Jetzt registrieren
                                 </button>
@@ -176,7 +176,7 @@ export default function Auth() {
                                 <button
                                     type="button"
                                     onClick={() => setMode('login')}
-                                    style={{ background: 'none', border: 'none', color: '#0070f3', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                                    style={{ background: 'none', border: 'none', color: 'var(--link)', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                                 >
                                     Anmelden
                                 </button>
@@ -191,8 +191,8 @@ export default function Auth() {
                     marginTop: '1.5rem',
                     padding: '1rem',
                     borderRadius: '0.5rem',
-                    backgroundColor: message.type === 'success' ? '#e8f5e9' : '#ffebee',
-                    color: message.type === 'success' ? '#2e7d32' : '#c62828',
+                    backgroundColor: message.type === 'success' ? 'var(--success-bg)' : 'var(--danger-bg)',
+                    color: message.type === 'success' ? 'var(--success-text)' : 'var(--danger-text)',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem'

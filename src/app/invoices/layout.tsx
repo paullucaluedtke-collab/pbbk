@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, FileText, FilePlus, Repeat, ArrowLeft, Landmark } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, FilePlus, Repeat, ArrowLeft, Landmark, Settings } from 'lucide-react';
 
 export default function InvoicingLayout({
     children,
@@ -17,6 +17,7 @@ export default function InvoicingLayout({
         { href: '/invoices/list', label: 'Alle Rechnungen', icon: FileText },
         { href: '/invoices/customers', label: 'Kunden', icon: Users },
         { href: '/invoices/subscriptions', label: 'Abo-Rechnungen', icon: Repeat },
+        { href: '/invoices/settings', label: 'Einstellungen', icon: Settings },
     ];
 
     const isActive = (href: string, exact?: boolean) => {
@@ -27,10 +28,10 @@ export default function InvoicingLayout({
     return (
         <div style={{ display: 'flex', minHeight: '100vh' }}>
             <aside style={{
-                width: '250px', backgroundColor: '#f8fafc', padding: '1.5rem',
-                borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column'
+                width: '250px', backgroundColor: 'var(--muted)', padding: '1.5rem',
+                borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column'
             }}>
-                <h2 style={{ marginBottom: '1.5rem', fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>
+                <h2 style={{ marginBottom: '1.5rem', fontSize: '1.1rem', fontWeight: 700, color: 'var(--foreground)' }}>
                     Fakturierung
                 </h2>
                 <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
@@ -44,13 +45,13 @@ export default function InvoicingLayout({
                                 style={{
                                     display: 'flex', alignItems: 'center', gap: '10px',
                                     padding: '10px 12px', textDecoration: 'none',
-                                    color: active ? '#0f172a' : '#334155',
+                                    color: active ? 'var(--foreground)' : 'var(--secondary-foreground)',
                                     borderRadius: '6px', fontSize: '0.9rem',
                                     fontWeight: active ? 600 : 500,
-                                    background: active ? '#e2e8f0' : 'transparent',
+                                    background: active ? 'var(--border)' : 'transparent',
                                     transition: 'background 0.15s, color 0.15s',
                                 }}
-                                onMouseEnter={e => { if (!active) e.currentTarget.style.background = '#e2e8f0'; }}
+                                onMouseEnter={e => { if (!active) e.currentTarget.style.background = 'var(--border)'; }}
                                 onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'transparent'; }}
                             >
                                 <Icon size={18} />
@@ -59,31 +60,31 @@ export default function InvoicingLayout({
                         );
                     })}
 
-                    <div style={{ marginTop: 'auto', borderTop: '1px solid #e2e8f0', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                         <Link href="/" style={{
                             display: 'flex', alignItems: 'center', gap: '10px',
-                            padding: '10px 12px', textDecoration: 'none', color: '#64748b',
+                            padding: '10px 12px', textDecoration: 'none', color: 'var(--muted-foreground)',
                             borderRadius: '6px', fontSize: '0.85rem', fontWeight: 500,
                             transition: 'background 0.15s',
                         }}
-                            onMouseEnter={e => { e.currentTarget.style.background = '#e2e8f0'; }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'var(--border)'; }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
                             <ArrowLeft size={16} /> Zurück zu Belegen
                         </Link>
                         <Link href="/bank" style={{
                             display: 'flex', alignItems: 'center', gap: '10px',
-                            padding: '10px 12px', textDecoration: 'none', color: '#64748b',
+                            padding: '10px 12px', textDecoration: 'none', color: 'var(--muted-foreground)',
                             borderRadius: '6px', fontSize: '0.85rem', fontWeight: 500,
                             transition: 'background 0.15s',
                         }}
-                            onMouseEnter={e => { e.currentTarget.style.background = '#e2e8f0'; }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'var(--border)'; }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
                             <Landmark size={16} /> Bankabgleich
                         </Link>
                     </div>
                 </nav>
             </aside>
-            <main style={{ flex: 1, padding: '2rem', backgroundColor: '#fff' }}>
+            <main style={{ flex: 1, padding: '2rem', backgroundColor: 'var(--background)' }}>
                 {children}
             </main>
         </div>

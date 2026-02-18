@@ -39,17 +39,17 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     };
 
     const iconMap = {
-        success: <CheckCircle size={18} color="#16a34a" />,
-        error: <XCircle size={18} color="#ef4444" />,
-        info: <Info size={18} color="#2563eb" />,
-        warning: <AlertTriangle size={18} color="#f59e0b" />,
+        success: <CheckCircle size={18} color="var(--success)" />,
+        error: <XCircle size={18} color="var(--danger)" />,
+        info: <Info size={18} color="var(--info)" />,
+        warning: <AlertTriangle size={18} color="var(--warning)" />,
     };
 
     const borderMap = {
-        success: '#bbf7d0',
-        error: '#fecaca',
-        info: '#bfdbfe',
-        warning: '#fde68a',
+        success: 'var(--success-bg)',
+        error: 'var(--danger-bg)',
+        info: 'var(--info-bg)',
+        warning: 'var(--warning-bg)',
     };
 
     return (
@@ -64,17 +64,17 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                     <div key={t.id} style={{
                         display: 'flex', alignItems: 'center', gap: '0.75rem',
                         padding: '0.75rem 1rem',
-                        background: 'white', borderRadius: '8px',
-                        border: `1px solid ${borderMap[t.type]}`,
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+                        background: 'var(--secondary)', borderRadius: '8px',
+                        border: `1px solid var(--border)`,
+                        boxShadow: 'var(--shadow-lg)',
                         animation: 'slideIn 0.3s ease-out',
-                        fontSize: '0.875rem', color: '#0f172a'
+                        fontSize: '0.875rem', color: 'var(--foreground)'
                     }}>
                         {iconMap[t.type]}
                         <span style={{ flex: 1 }}>{t.text}</span>
                         <button onClick={() => dismiss(t.id)} style={{
                             background: 'none', border: 'none', cursor: 'pointer',
-                            color: '#94a3b8', padding: '2px'
+                            color: 'var(--muted-foreground)', padding: '2px'
                         }}>
                             <X size={14} />
                         </button>

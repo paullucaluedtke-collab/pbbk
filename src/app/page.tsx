@@ -174,8 +174,8 @@ export default function Home() {
     if (loadingAuth) {
         return (
             <div className="container" style={{ textAlign: 'center', marginTop: '6rem' }}>
-                <div style={{ display: 'inline-block', width: '32px', height: '32px', border: '3px solid #e2e8f0', borderTopColor: '#0f172a', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                <p style={{ marginTop: '1rem', color: '#64748b', fontSize: '0.9rem' }}>Lade Anwendung...</p>
+                <div style={{ display: 'inline-block', width: '32px', height: '32px', border: '3px solid var(--border)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                <p style={{ marginTop: '1rem', color: 'var(--muted-foreground)', fontSize: '0.9rem' }}>Lade Anwendung...</p>
             </div>
         );
     }
@@ -192,11 +192,11 @@ export default function Home() {
                         <h1 className={styles.title}>Bürokratie Killer</h1>
                         <p className={styles.subtitle}>Der intelligente Rechnungs-Extraktor</p>
                         <div style={{ marginTop: '0.5rem' }}>
-                            <Link href="/invoices" style={{ color: '#0070f3', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                            <Link href="/invoices" style={{ color: 'var(--link)', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                                 &rarr; Zur Fakturierung
                             </Link>
                             <br />
-                            <Link href="/bank" style={{ color: '#0070f3', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '0.25rem' }}>
+                            <Link href="/bank" style={{ color: 'var(--link)', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '0.25rem' }}>
                                 &rarr; Zum Bankabgleich
                             </Link>
                         </div>
@@ -246,7 +246,7 @@ export default function Home() {
                                 disabled={receipts.length === 0}
                                 style={{
                                     background: 'none', border: 'none', cursor: 'pointer',
-                                    color: '#94a3b8', fontSize: '0.75rem', padding: '0.25rem 0.5rem',
+                                    color: 'var(--muted-foreground)', fontSize: '0.75rem', padding: '0.25rem 0.5rem',
                                     textDecoration: 'underline'
                                 }}
                                 title="Alle Belege unwiderruflich löschen"

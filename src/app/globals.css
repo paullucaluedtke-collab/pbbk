@@ -6,8 +6,8 @@
   --foreground: #0f172a;
 
   --primary: #0f172a;
-  /* Dark Slate for primary actions */
   --primary-foreground: #ffffff;
+  --primary-hover: #1e293b;
 
   --secondary: #ffffff;
   --secondary-foreground: #334155;
@@ -32,6 +32,27 @@
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Semantic Colors */
+  --success: #16a34a;
+  --success-bg: #dcfce7;
+  --success-text: #166534;
+  --danger: #ef4444;
+  --danger-bg: #fee2e2;
+  --danger-text: #991b1b;
+  --warning: #f59e0b;
+  --warning-bg: #fef3c7;
+  --warning-text: #92400e;
+  --info: #2563eb;
+  --info-bg: #dbeafe;
+  --info-text: #1e40af;
+  --link: #2563eb;
+
+  --hint-bg: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+  --hint-border: #bfdbfe;
+  --hint-text: #1e40af;
+
+  --table-header-bg: #f9fafb;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -40,17 +61,43 @@
     --foreground: #f8fafc;
     --primary: #f8fafc;
     --primary-foreground: #020617;
-    --secondary: #1e293b;
-    --secondary-foreground: #f8fafc;
+    --primary-hover: #cbd5e1;
+    --secondary: #0f172a;
+    --secondary-foreground: #e2e8f0;
     --muted: #1e293b;
     --muted-foreground: #94a3b8;
     --accent: #1e293b;
-    --accent-foreground: #f8fafc;
-    --destructive: #7f1d1d;
+    --accent-foreground: #93c5fd;
+    --destructive: #ef4444;
     --destructive-foreground: #f8fafc;
     --border: #1e293b;
     --input: #1e293b;
-    --ring: #1e293b;
+    --ring: #334155;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+
+    --success: #4ade80;
+    --success-bg: rgba(22, 163, 74, 0.15);
+    --success-text: #86efac;
+    --danger: #f87171;
+    --danger-bg: rgba(239, 68, 68, 0.15);
+    --danger-text: #fca5a5;
+    --warning: #fbbf24;
+    --warning-bg: rgba(245, 158, 11, 0.15);
+    --warning-text: #fde68a;
+    --info: #60a5fa;
+    --info-bg: rgba(37, 99, 235, 0.15);
+    --info-text: #93c5fd;
+    --link: #60a5fa;
+
+    --hint-bg: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(14, 165, 233, 0.08) 100%);
+    --hint-border: #1e3a5f;
+    --hint-text: #93c5fd;
+
+    --table-header-bg: #0f172a;
   }
 }
 

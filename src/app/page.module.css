@@ -5,7 +5,7 @@
 }
 
 .header {
-    background: white;
+    background: var(--secondary);
     border-bottom: 1px solid var(--border);
     padding: 1.25rem 0;
     margin-bottom: 2rem;
@@ -25,7 +25,7 @@
 }
 
 .card {
-    background: white;
+    background: var(--secondary);
     border-radius: var(--radius);
     padding: 1.5rem;
     box-shadow: var(--shadow-sm);
@@ -76,7 +76,7 @@
 }
 
 .primaryButton:hover:not(:disabled) {
-    background-color: #1e293b;
+    background-color: var(--primary-hover);
     transform: translateY(-1px);
 }
 
@@ -87,7 +87,7 @@
 
 .secondaryButton {
     composes: button;
-    background-color: white;
+    background-color: var(--secondary);
     color: var(--secondary-foreground);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
@@ -124,9 +124,9 @@
 .errorBanner {
     margin-top: 1rem;
     padding: 1rem;
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #991b1b;
+    background-color: var(--danger-bg);
+    border: 1px solid var(--danger);
+    color: var(--danger-text);
     border-radius: var(--radius);
     display: flex;
     align-items: center;

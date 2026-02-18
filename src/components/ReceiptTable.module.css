@@ -41,7 +41,7 @@
 .emptyState {
     text-align: center;
     padding: 3rem;
-    color: #64748b;
+    color: var(--muted-foreground);
     border: 1px dashed var(--border);
     border-radius: var(--radius);
     margin-top: 2rem;
@@ -96,7 +96,7 @@
 .iconBtn {
     background: transparent;
     border: none;
-    color: #94a3b8;
+    color: var(--muted-foreground);
     padding: 0.25rem;
     border-radius: 0.25rem;
     display: inline-flex;
@@ -108,7 +108,7 @@
 
 .iconBtn:hover {
     color: var(--primary);
-    background: #eff6ff;
+    background: var(--accent);
 }
 
 .deleteBtn {
@@ -116,37 +116,37 @@
 }
 
 .deleteBtn:hover {
-    color: #ef4444;
-    background: #fef2f2;
+    color: var(--danger);
+    background: var(--danger-bg);
 }
 
 .verifyBtn {
     composes: iconBtn;
-    color: #16a34a;
+    color: var(--success);
 }
 
 .verifyBtn:hover {
-    color: #15803d;
-    background: #dcfce7;
+    color: var(--success);
+    background: var(--success-bg);
 }
 
 .rejectBtn {
     composes: iconBtn;
-    color: #ef4444;
+    color: var(--danger);
 }
 
 .rejectBtn:hover {
-    color: #b91c1c;
-    background: #fee2e2;
+    color: var(--danger);
+    background: var(--danger-bg);
 }
 
 .income {
-    color: #16a34a;
+    color: var(--success);
     font-weight: 600;
 }
 
 .expense {
-    color: #ea580c;
+    color: var(--warning);
 }
 
 .statusBadge {
@@ -160,18 +160,18 @@
 }
 
 .Verified {
-    background-color: #dcfce7;
-    color: #166534;
+    background-color: var(--success-bg);
+    color: var(--success-text);
 }
 
 .Rejected {
-    background-color: #fee2e2;
-    color: #991b1b;
+    background-color: var(--danger-bg);
+    color: var(--danger-text);
 }
 
 .Pending {
-    background-color: #f1f5f9;
-    color: #475569;
+    background-color: var(--muted);
+    color: var(--muted-foreground);
 }
 
 .rejectedRow td {
