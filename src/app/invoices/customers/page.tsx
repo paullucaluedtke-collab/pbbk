@@ -1,10 +1,5 @@
-import { getCustomers } from '@/app/actions/customerActions';
-import CustomerManager from '@/components/CustomerManager';
+import { redirect } from 'next/navigation';
 
-export const dynamic = 'force-dynamic';
-
-export default async function CustomersPage() {
-    const customers = await getCustomers();
-
-    return <CustomerManager initialCustomers={customers} />;
+export default function CustomersPage() {
+    redirect('/customers');
 }

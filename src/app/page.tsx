@@ -193,15 +193,30 @@ export default function Home() {
                             <h1 className={styles.title}>Bürokratie Killer</h1>
                             <p className={styles.subtitle}>Der intelligente Rechnungs-Extraktor</p>
                             <div className={styles.navLinks}>
-                                <Link href="/invoices" className={styles.navLink}>
-                                    &rarr; Zur Fakturierung
-                                </Link>
-                                <Link href="/bank" className={styles.navLink}>
-                                    &rarr; Zum Bankabgleich
-                                </Link>
-                                <Link href="/steuer" className={styles.navLink}>
-                                    &rarr; Zur Steuererklärung
-                                </Link>
+                                <div style={{ display: 'grid', gap: '0.25rem' }}>
+                                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginTop: '0.5rem' }}>Finanzen</span>
+                                    <Link href="/invoices" className={styles.navLink}>
+                                        &rarr; Zur Fakturierung
+                                    </Link>
+                                    <Link href="/offers" className={styles.navLink}>
+                                        &rarr; Angebote & Aufträge
+                                    </Link>
+                                    <Link href="/bank" className={styles.navLink}>
+                                        &rarr; Zum Bankabgleich
+                                    </Link>
+                                </div>
+                                <div style={{ display: 'grid', gap: '0.25rem' }}>
+                                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted-foreground)', textTransform: 'uppercase', marginTop: '0.5rem' }}>Verwaltung</span>
+                                    <Link href="/customers" className={styles.navLink}>
+                                        &rarr; Kundenverwaltung
+                                    </Link>
+                                    <Link href="/reports/euer" className={styles.navLink}>
+                                        &rarr; EÜR & Berichte
+                                    </Link>
+                                    <Link href="/steuer" className={styles.navLink}>
+                                        &rarr; Steuererklärung
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                         <button
