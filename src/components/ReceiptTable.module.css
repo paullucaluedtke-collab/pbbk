@@ -1,6 +1,7 @@
 .tableWrapper {
     width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--background);

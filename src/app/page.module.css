@@ -133,3 +133,53 @@
     gap: 0.75rem;
     font-size: 0.875rem;
 }
+
+.headerContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.navLinks {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.navLink {
+    color: var(--link);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+@media (max-width: 640px) {
+    .headerContent {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .controlButtons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .controlButtons button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .title {
+        font-size: 1.25rem;
+    }
+}

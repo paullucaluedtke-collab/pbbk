@@ -58,16 +58,39 @@ export default function UploadZone({ onFileSelect, isProcessing }: UploadZonePro
                     {isProcessing ? (
                         <Loader2 className={styles.spinner} size={48} />
                     ) : (
-                        <Upload size={48} />
+                        <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center' }}>
+                            <div className={styles.actionButton}>
+                                <FileImage size={32} />
+                                <span>Datei wählen</span>
+                            </div>
+                            <div className={styles.actionButton} onClick={(e) => {
+                                e.preventDefault();
+                                document.getElementById('camera-upload')?.click();
+                            }}>
+                                <Upload size={32} />
+                                <span>Kamera</span>
+                            </div>
+                        </div>
                     )}
                 </div>
                 <h3 className={styles.title}>
-                    {isProcessing ? 'Analysiere Beleg...' : 'Beleg hier ablegen'}
+                    {isProcessing ? 'Analysiere Beleg...' : 'Beleg hochladen oder fotografieren'}
                 </h3>
                 <p className={styles.subtitle}>
-                    oder klicken zum Auswählen (JPG, PNG, PDF)
+                    Unterstützt JPG, PNG, PDF
                 </p>
             </label>
+
+            {/* Hidden Camera Input */}
+            <input
+                type="file"
+                id="camera-upload"
+                className={styles.fileInput}
+                onChange={handleChange}
+                accept="image/*"
+                capture="environment"
+                disabled={isProcessing}
+            />
         </div>
     );
 }

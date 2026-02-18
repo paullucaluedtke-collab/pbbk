@@ -68,3 +68,43 @@
         transform: rotate(360deg);
     }
 }
+
+.actionButton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    min-width: 100px;
+}
+
+.actionButton:hover {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+@media (max-width: 640px) {
+    .uploadZone {
+        padding: 2rem 1rem;
+    }
+
+    .title {
+        font-size: 1.1rem;
+    }
+
+    .iconWrapper>div {
+        gap: 1rem !important;
+    }
+
+    .actionButton {
+        padding: 0.75rem;
+        min-width: 80px;
+    }
+}

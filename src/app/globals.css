@@ -121,6 +121,18 @@ body {
   padding: 2rem;
 }
 
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+  }
+}
+
 h1,
 h2,
 h3,

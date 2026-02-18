@@ -187,34 +187,35 @@ export default function Home() {
     return (
         <main className={styles.main}>
             <header className={styles.header}>
-                <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                        <h1 className={styles.title}>Bürokratie Killer</h1>
-                        <p className={styles.subtitle}>Der intelligente Rechnungs-Extraktor</p>
-                        <div style={{ marginTop: '0.5rem' }}>
-                            <Link href="/invoices" style={{ color: 'var(--link)', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                                &rarr; Zur Fakturierung
-                            </Link>
-                            <br />
-                            <Link href="/bank" style={{ color: 'var(--link)', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '0.25rem' }}>
-                                &rarr; Zum Bankabgleich
-                            </Link>
-                            <br />
-                            <Link href="/steuer" style={{ color: 'var(--link)', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '0.25rem' }}>
-                                &rarr; Zur Steuererklärung
-                            </Link>
+                <div className="container">
+                    <div className={styles.headerContent}>
+                        <div>
+                            <h1 className={styles.title}>Bürokratie Killer</h1>
+                            <p className={styles.subtitle}>Der intelligente Rechnungs-Extraktor</p>
+                            <div className={styles.navLinks}>
+                                <Link href="/invoices" className={styles.navLink}>
+                                    &rarr; Zur Fakturierung
+                                </Link>
+                                <Link href="/bank" className={styles.navLink}>
+                                    &rarr; Zum Bankabgleich
+                                </Link>
+                                <Link href="/steuer" className={styles.navLink}>
+                                    &rarr; Zur Steuererklärung
+                                </Link>
+                            </div>
                         </div>
+                        <button
+                            onClick={handleLogout}
+                            className={styles.secondaryButton}
+                            style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', alignSelf: 'flex-start' }}
+                        >
+                            <LogOut size={16} style={{ marginRight: '6px' }} />
+                            Abmelden
+                        </button>
                     </div>
-                    <button
-                        onClick={handleLogout}
-                        className={styles.secondaryButton}
-                        style={{ padding: '0.5rem 1rem', fontSize: '0.9rem' }}
-                    >
-                        <LogOut size={16} style={{ marginRight: '6px' }} />
-                        Abmelden
-                    </button>
                 </div>
             </header>
+
 
             <div className="container">
                 <div className={styles.card}>
@@ -270,12 +271,14 @@ export default function Home() {
                 </div>
             </div>
 
-            {selectedImage && (
-                <ImageModal
-                    imageUrl={selectedImage}
-                    onClose={() => setSelectedImage(null)}
-                />
-            )}
-        </main>
+            {
+                selectedImage && (
+                    <ImageModal
+                        imageUrl={selectedImage}
+                        onClose={() => setSelectedImage(null)}
+                    />
+                )
+            }
+        </main >
     );
 }
