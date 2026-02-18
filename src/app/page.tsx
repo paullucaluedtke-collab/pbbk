@@ -199,6 +199,10 @@ export default function Home() {
                             <Link href="/bank" style={{ color: 'var(--link)', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '0.25rem' }}>
                                 &rarr; Zum Bankabgleich
                             </Link>
+                            <br />
+                            <Link href="/steuer" style={{ color: 'var(--link)', textDecoration: 'none', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '0.25rem' }}>
+                                &rarr; Zur Steuererklärung
+                            </Link>
                         </div>
                     </div>
                     <button
