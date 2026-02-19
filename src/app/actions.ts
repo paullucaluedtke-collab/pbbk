@@ -48,6 +48,7 @@ export async function addReceipt(formData: FormData, analysisData: any) {
         totalAmount: typeof analysisData.totalAmount === 'number' ? analysisData.totalAmount : 0,
         imageUrl: '', // Will be set by saveReceipt
         status: 'Pending',
+        confidence: analysisData.confidence || 'medium',
     };
 
     try {

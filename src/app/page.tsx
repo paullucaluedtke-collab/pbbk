@@ -249,6 +249,13 @@ export default function Home() {
                         </div>
                     )}
 
+                    {receipts.length > 0 && receipts[0].confidence === 'low' && (
+                        <div className={styles.errorBanner} style={{ backgroundColor: '#fff3cd', color: '#856404', borderColor: '#ffeeba' }}>
+                            <AlertCircle size={20} />
+                            <span>⚠️ Die KI war sich bei einigen Werten unsicher. Bitte überprüfe den neuen Beleg genau.</span>
+                        </div>
+                    )}
+
                     <div className={styles.controls}>
                         <h3>Erfasste Belege ({receipts.length})</h3>
                         <div className={styles.controlButtons}>

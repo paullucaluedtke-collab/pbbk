@@ -26,4 +26,5 @@ export interface ReceiptData {
     status: 'Pending' | 'Verified' | 'Rejected';
     verifiedAt?: string;
     verifiedBy?: string;
+    confidence?: 'high' | 'medium' | 'low';
 }

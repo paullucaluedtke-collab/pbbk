@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { Customer, Invoice, InvoiceItem } from '@/types/invoice';
 import { createInvoice } from '@/app/actions/invoiceActions';
+import { getNextInvoiceNumber } from '@/app/actions/invoiceNumberAction';
 import { Plus, Trash2, Save, ArrowLeft } from 'lucide-react';
 import styles from '@/app/page.module.css';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface InvoiceFormProps {
     customers: Customer[];
@@ -13,10 +14,12 @@ interface InvoiceFormProps {
 
 export default function InvoiceForm({ customers }: InvoiceFormProps) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const preselectedCustomerId = searchParams.get('customerId');
     const [loading, setLoading] = useState(false);
 
     // Header Data
-    const [customerId, setCustomerId] = useState('');
+    const [customerId, setCustomerId] = useState(preselectedCustomerId || '');
     const [invoiceNumber, setInvoiceNumber] = useState('');
     const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
     const defaultDue = new Date();
@@ -41,10 +44,13 @@ export default function InvoiceForm({ customers }: InvoiceFormProps) {
     const taxAmount = items.reduce((sum, item) => sum + (item.quantity! * item.unit_price! * (item.tax_rate! / 100)), 0);
     const totalAmount = subtotal + taxAmount;
 
+
+
     useEffect(() => {
-        // Auto-generate invoice number (simple logic for MVP)
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
-        setInvoiceNumber(`RE-${new Date().getFullYear()}-${randomNum}`);
+        // Fetch sequential invoice number on mount
+        getNextInvoiceNumber().then(num => {
+            if (num) setInvoiceNumber(num);
+        });
     }, []);
 
     const handleItemChange = (index: number, field: keyof InvoiceItem, value: string | number) => {

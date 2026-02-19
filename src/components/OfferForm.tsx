@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { saveOffer, getOffer, convertToInvoice } from '@/app/actions/offerActions';
 import { getCustomers } from '@/app/actions/customerActions';
 import { Offer, OfferItem, defaultOffer } from '@/types/offer';
@@ -19,9 +19,25 @@ export default function OfferForm({ params }: { params?: { id: string } }) {
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
+    const searchParams = useSearchParams();
+    const preselectedCustomerId = searchParams.get('customerId');
+
     useEffect(() => {
         // Load customers for dropdown
-        getCustomers().then(setCustomers);
+        getCustomers().then(data => {
+            setCustomers(data);
+            if (preselectedCustomerId) {
+                const customer = data.find(c => c.id === preselectedCustomerId);
+                if (customer) {
+                    setOffer(prev => ({
+                        ...prev,
+                        customer_id: customer.id,
+                        customer_name: customer.name,
+                        customer_address: [customer.address_line1, customer.address_line2, customer.city_zip].filter(Boolean).join('\n'),
+                    }));
+                }
+            }
+        });
 
         if (!isNew && params?.id) {
             getOffer(params.id).then(data => {
@@ -29,7 +45,7 @@ export default function OfferForm({ params }: { params?: { id: string } }) {
                 setLoading(false);
             });
         }
-    }, [isNew, params?.id]);
+    }, [isNew, params?.id, preselectedCustomerId]);
 
     const handleCustomerChange = (customerId: string) => {
         const customer = customers.find(c => c.id === customerId);

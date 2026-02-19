@@ -82,6 +82,33 @@ export default function CustomerForm({ params }: { params?: { id: string } }) {
                 </h1>
             </div>
 
+            {!isNew && params?.id && (
+                <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+                    <Link
+                        href={`/offers/new?customerId=${params.id}`}
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '0.5rem',
+                            padding: '0.5rem 1rem', borderRadius: '6px',
+                            background: '#fff', border: '1px solid #ddd',
+                            color: '#333', textDecoration: 'none', fontSize: '0.9rem'
+                        }}
+                    >
+                        <span>📄</span> Angebot erstellen
+                    </Link>
+                    <Link
+                        href={`/invoices/create?customerId=${params.id}`}
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '0.5rem',
+                            padding: '0.5rem 1rem', borderRadius: '6px',
+                            background: '#fff', border: '1px solid #ddd',
+                            color: '#333', textDecoration: 'none', fontSize: '0.9rem'
+                        }}
+                    >
+                        <span>💶</span> Rechnung erstellen
+                    </Link>
+                </div>
+            )}
+
             <form onSubmit={handleSubmit} style={{
                 background: 'var(--secondary)', borderRadius: '10px',
                 border: '1px solid var(--border)', padding: '2rem',
