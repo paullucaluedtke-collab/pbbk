@@ -134,24 +134,45 @@ export const generateInvoicePDF = (invoice: Invoice, company?: CompanySettings |
     doc.text("Netto:", totalsX, finalY);
     doc.text(`${invoice.subtotal.toFixed(2)} €`, totalsValX, finalY, { align: 'right' });
 
-    // Tax
-    doc.text(`USt. 19%:`, totalsX, finalY + 5);
-    doc.text(`${invoice.tax_amount.toFixed(2)} €`, totalsValX, finalY + 5, { align: 'right' });
+    // Tax (Dynamic grouped by rate)
+    const taxesByRate: { [rate: number]: number } = {};
+    if (invoice.items) {
+        invoice.items.forEach(item => {
+            const rate = item.tax_rate || 19;
+            const taxForLine = item.quantity * item.unit_price * (rate / 100);
+            taxesByRate[rate] = (taxesByRate[rate] || 0) + taxForLine;
+        });
+    }
+
+    let currentY = finalY + 5;
+    Object.entries(taxesByRate).forEach(([rate, amount]) => {
+        if (amount > 0) {
+            doc.text(`USt. ${rate}%:`, totalsX, currentY);
+            doc.text(`${amount.toFixed(2)} €`, totalsValX, currentY, { align: 'right' });
+            currentY += 5;
+        }
+    });
+
+    if (Object.keys(taxesByRate).length === 0) {
+        doc.text(`USt:`, totalsX, currentY);
+        doc.text(`${invoice.tax_amount.toFixed(2)} €`, totalsValX, currentY, { align: 'right' });
+        currentY += 5;
+    }
 
     // Divider Line
     doc.setDrawColor(200);
-    doc.line(totalsX, finalY + 8, totalsValX, finalY + 8);
+    doc.line(totalsX, currentY + 3, totalsValX, currentY + 3);
 
     // Total
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text("Gesamtbetrag:", totalsX, finalY + 15);
-    doc.text(`${invoice.total_amount.toFixed(2)} €`, totalsValX, finalY + 15, { align: 'right' });
+    doc.text("Gesamtbetrag:", totalsX, currentY + 10);
+    doc.text(`${invoice.total_amount.toFixed(2)} €`, totalsValX, currentY + 10, { align: 'right' });
 
     // --- Footer Text ---
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    const footerY = finalY + 30;
+    const footerY = currentY + 25;
 
     if (invoice.footer_text) {
         doc.text(invoice.footer_text, margin, footerY);

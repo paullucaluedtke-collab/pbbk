@@ -215,15 +215,16 @@ export default function OfferForm({ params }: { params?: { id: string } }) {
                 {/* Items */}
                 <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Positionen</h3>
                 <div style={{ marginBottom: '1.5rem' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1.5fr 1fr auto', gap: '1rem', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1.5fr 1fr 1fr auto', gap: '1rem', marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>
                         <div>Beschreibung</div>
                         <div style={{ textAlign: 'right' }}>Menge</div>
                         <div style={{ textAlign: 'right' }}>Einzelpreis</div>
+                        <div style={{ textAlign: 'right' }}>Steuer (%)</div>
                         <div style={{ textAlign: 'right' }}>Gesamt</div>
                         <div></div>
                     </div>
                     {(offer.items || []).map((item, idx) => (
-                        <div key={idx} style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1.5fr 1fr auto', gap: '1rem', marginBottom: '0.75rem', alignItems: 'center' }}>
+                        <div key={idx} style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1.5fr 1fr 1fr auto', gap: '1rem', marginBottom: '0.75rem', alignItems: 'center' }}>
                             <input
                                 style={inputStyle}
                                 value={item.description}
@@ -241,6 +242,12 @@ export default function OfferForm({ params }: { params?: { id: string } }) {
                                 style={{ ...inputStyle, textAlign: 'right' }}
                                 value={item.price}
                                 onChange={e => handleItemChange(idx, 'price', Number(e.target.value))}
+                            />
+                            <input
+                                type="number"
+                                style={{ ...inputStyle, textAlign: 'right' }}
+                                value={item.tax ?? 19}
+                                onChange={e => handleItemChange(idx, 'tax', Number(e.target.value))}
                             />
                             <div style={{ textAlign: 'right', fontWeight: 600 }}>
                                 {(item.quantity * item.price).toFixed(2)} €
@@ -275,10 +282,33 @@ export default function OfferForm({ params }: { params?: { id: string } }) {
                             <span style={{ color: 'var(--muted-foreground)' }}>Netto:</span>
                             <span>{offer.subtotal?.toFixed(2)} €</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <span style={{ color: 'var(--muted-foreground)' }}>MwSt:</span>
-                            <span>{offer.tax_total?.toFixed(2)} €</span>
-                        </div>
+                        {/* Dynamic Tax Rates */}
+                        {(() => {
+                            const taxesByRate: { [rate: number]: number } = {};
+                            (offer.items || []).forEach(item => {
+                                const rate = item.tax ?? 19;
+                                const taxForLine = item.quantity * item.price * (rate / 100);
+                                taxesByRate[rate] = (taxesByRate[rate] || 0) + taxForLine;
+                            });
+
+                            const rates = Object.keys(taxesByRate).map(Number).filter(r => taxesByRate[r] > 0);
+
+                            if (rates.length === 0) {
+                                return (
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <span style={{ color: 'var(--muted-foreground)' }}>MwSt:</span>
+                                        <span>{(offer.tax_total || 0).toFixed(2)} €</span>
+                                    </div>
+                                );
+                            }
+
+                            return rates.map(rate => (
+                                <div key={rate} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span style={{ color: 'var(--muted-foreground)' }}>USt. {rate}%:</span>
+                                    <span>{taxesByRate[rate].toFixed(2)} €</span>
+                                </div>
+                            ));
+                        })()}
                         <div style={{
                             display: 'flex', justifyContent: 'space-between',
                             fontWeight: 700, fontSize: '1.1rem',

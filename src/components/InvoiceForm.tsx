@@ -235,10 +235,33 @@ export default function InvoiceForm({ customers }: InvoiceFormProps) {
                             <span>Netto:</span>
                             <span>{subtotal.toFixed(2)} €</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                            <span>MwSt:</span>
-                            <span>{taxAmount.toFixed(2)} €</span>
-                        </div>
+                        {/* Dynamic Tax Rates */}
+                        {(() => {
+                            const taxesByRate: { [rate: number]: number } = {};
+                            items.forEach(item => {
+                                const rate = item.tax_rate ?? 19;
+                                const taxForLine = (item.quantity || 0) * (item.unit_price || 0) * (rate / 100);
+                                taxesByRate[rate] = (taxesByRate[rate] || 0) + taxForLine;
+                            });
+
+                            const rates = Object.keys(taxesByRate).map(Number).filter(r => taxesByRate[r] > 0);
+
+                            if (rates.length === 0) {
+                                return (
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                        <span>MwSt:</span>
+                                        <span>{taxAmount.toFixed(2)} €</span>
+                                    </div>
+                                );
+                            }
+
+                            return rates.map(rate => (
+                                <div key={rate} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                    <span>USt. {rate}%:</span>
+                                    <span>{taxesByRate[rate].toFixed(2)} €</span>
+                                </div>
+                            ));
+                        })()}
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>
                             <span>Gesamtbetrag:</span>
                             <span>{totalAmount.toFixed(2)} €</span>
