@@ -237,14 +237,18 @@ export default function InvoiceForm({ customers }: InvoiceFormProps) {
                         </div>
                         {/* Dynamic Tax Rates */}
                         {(() => {
-                            const taxesByRate: { [rate: number]: number } = {};
+                            const taxesByRate: { [rate: number]: { tax: number, net: number } } = {};
                             items.forEach(item => {
                                 const rate = item.tax_rate ?? 19;
-                                const taxForLine = (item.quantity || 0) * (item.unit_price || 0) * (rate / 100);
-                                taxesByRate[rate] = (taxesByRate[rate] || 0) + taxForLine;
+                                const netForLine = (item.quantity || 0) * (item.unit_price || 0);
+                                const taxForLine = netForLine * (rate / 100);
+
+                                if (!taxesByRate[rate]) taxesByRate[rate] = { tax: 0, net: 0 };
+                                taxesByRate[rate].tax += taxForLine;
+                                taxesByRate[rate].net += netForLine;
                             });
 
-                            const rates = Object.keys(taxesByRate).map(Number).filter(r => taxesByRate[r] > 0);
+                            const rates = Object.keys(taxesByRate).map(Number).filter(r => taxesByRate[r].net > 0);
 
                             if (rates.length === 0) {
                                 return (
@@ -257,8 +261,8 @@ export default function InvoiceForm({ customers }: InvoiceFormProps) {
 
                             return rates.map(rate => (
                                 <div key={rate} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                    <span>USt. {rate}%:</span>
-                                    <span>{taxesByRate[rate].toFixed(2)} €</span>
+                                    <span style={{ color: '#666' }}>{rate}% USt. auf {taxesByRate[rate].net.toFixed(2)} €:</span>
+                                    <span>{taxesByRate[rate].tax.toFixed(2)} €</span>
                                 </div>
                             ));
                         })()}

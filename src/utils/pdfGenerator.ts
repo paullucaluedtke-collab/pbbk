@@ -134,21 +134,25 @@ export const generateInvoicePDF = (invoice: Invoice, company?: CompanySettings |
     doc.text("Netto:", totalsX, finalY);
     doc.text(`${invoice.subtotal.toFixed(2)} €`, totalsValX, finalY, { align: 'right' });
 
-    // Tax (Dynamic grouped by rate)
-    const taxesByRate: { [rate: number]: number } = {};
+    // Tax (Dynamic grouped by rate with explicit net amount calculation)
+    const taxesByRate: { [rate: number]: { tax: number, net: number } } = {};
     if (invoice.items) {
         invoice.items.forEach(item => {
-            const rate = item.tax_rate || 19;
-            const taxForLine = item.quantity * item.unit_price * (rate / 100);
-            taxesByRate[rate] = (taxesByRate[rate] || 0) + taxForLine;
+            const rate = item.tax_rate ?? 19;
+            const netForLine = item.quantity * item.unit_price;
+            const taxForLine = netForLine * (rate / 100);
+
+            if (!taxesByRate[rate]) taxesByRate[rate] = { tax: 0, net: 0 };
+            taxesByRate[rate].tax += taxForLine;
+            taxesByRate[rate].net += netForLine;
         });
     }
 
     let currentY = finalY + 5;
-    Object.entries(taxesByRate).forEach(([rate, amount]) => {
-        if (amount > 0) {
-            doc.text(`USt. ${rate}%:`, totalsX, currentY);
-            doc.text(`${amount.toFixed(2)} €`, totalsValX, currentY, { align: 'right' });
+    Object.entries(taxesByRate).forEach(([rateStr, data]) => {
+        if (data.net > 0) {
+            doc.text(`${rateStr}% USt. auf ${data.net.toFixed(2)} €:`, 110, currentY); // Shifted left to ensure text fits
+            doc.text(`${data.tax.toFixed(2)} €`, totalsValX, currentY, { align: 'right' });
             currentY += 5;
         }
     });
