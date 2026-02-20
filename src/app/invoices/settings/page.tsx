@@ -115,8 +115,12 @@ export default function CompanySettingsPage() {
                         <input style={inputStyle} value={settings.city_zip} onChange={e => updateField('city_zip', e.target.value)} placeholder="12345 Musterstadt" />
                     </div>
                     <div>
-                        <label style={labelStyle}>Steuernummer / USt-IdNr.</label>
-                        <input style={inputStyle} value={settings.tax_id} onChange={e => updateField('tax_id', e.target.value)} placeholder="DE123456789" />
+                        <label style={labelStyle}>Steuernummer</label>
+                        <input style={inputStyle} value={settings.tax_id} onChange={e => updateField('tax_id', e.target.value)} placeholder="012/345/67890" />
+                    </div>
+                    <div>
+                        <label style={labelStyle}>USt-IdNr.</label>
+                        <input style={inputStyle} value={settings.vat_id || ''} onChange={e => updateField('vat_id', e.target.value)} placeholder="DE123456789" />
                     </div>
                 </div>
 

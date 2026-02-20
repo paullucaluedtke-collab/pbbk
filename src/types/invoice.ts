@@ -5,6 +5,7 @@ export interface Customer {
     address?: string;
     email?: string;
     tax_id?: string;
+    vat_id?: string;
     created_at?: string;
 }
 

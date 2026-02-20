@@ -7,6 +7,7 @@ export interface Customer {
     address_line2?: string;
     city_zip?: string;
     tax_id?: string;
+    vat_id?: string;
     payment_terms?: string;
     created_at?: string;
 }
@@ -18,5 +19,6 @@ export const defaultCustomer: Omit<Customer, 'id' | 'user_id' | 'created_at'> = 
     address_line2: '',
     city_zip: '',
     tax_id: '',
+    vat_id: '',
     payment_terms: '14 Tage netto',
 };

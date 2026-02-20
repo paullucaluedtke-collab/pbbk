@@ -12,6 +12,7 @@ export interface CompanySettings {
     iban: string;
     bic: string;
     tax_id: string;
+    vat_id?: string;
 }
 
 export const defaultCompanySettings: CompanySettings = {
@@ -26,4 +27,5 @@ export const defaultCompanySettings: CompanySettings = {
     iban: '',
     bic: '',
     tax_id: '',
+    vat_id: '',
 };

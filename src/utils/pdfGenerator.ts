@@ -21,7 +21,8 @@ export const generateInvoicePDF = (invoice: Invoice, company?: CompanySettings |
         bank_name: company?.bank_name || 'Musterbank',
         iban: company?.iban || 'DE00 1234 5678 9012 3456 78',
         bic: company?.bic || '',
-        tax_id: company?.tax_id || 'DE 123 456 789',
+        tax_id: company?.tax_id || '123/456/7890',
+        vat_id: company?.vat_id || 'DE123456789',
     };
 
     // --- Sender Line (Small, above address) ---
@@ -210,7 +211,10 @@ export const generateInvoicePDF = (invoice: Invoice, company?: CompanySettings |
     // Column 3: Bank / Tax
     doc.text(`Bank: ${c.bank_name}`, col3, footerLine1Y);
     doc.text(`IBAN: ${c.iban}`, col3, footerLine1Y + 4);
-    doc.text(`USt-IdNr.: ${c.tax_id}`, col3, footerLine1Y + 8);
+    doc.text(`Steuernummer: ${c.tax_id}`, col3, footerLine1Y + 8);
+    if (c.vat_id) {
+        doc.text(`USt-IdNr.: ${c.vat_id}`, col3, footerLine1Y + 12);
+    }
 
     doc.save(`Rechnung_${invoice.invoice_number}.pdf`);
 };

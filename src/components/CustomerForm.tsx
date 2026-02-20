@@ -143,6 +143,15 @@ export default function CustomerForm({ params }: { params?: { id: string } }) {
                                 style={inputStyle}
                                 value={customer.tax_id || ''}
                                 onChange={e => handleChange('tax_id', e.target.value)}
+                                placeholder="012/345/67890"
+                            />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>USt-IdNr.</label>
+                            <input
+                                style={{ ...inputStyle, width: '100%' }}
+                                value={customer.vat_id || ''}
+                                onChange={e => handleChange('vat_id', e.target.value)}
                                 placeholder="DE123456789"
                             />
                         </div>

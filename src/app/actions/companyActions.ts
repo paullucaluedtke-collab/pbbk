@@ -31,6 +31,7 @@ export async function getCompanySettings(): Promise<CompanySettings | null> {
         iban: data.iban || '',
         bic: data.bic || '',
         tax_id: data.tax_id || '',
+        vat_id: data.vat_id || '',
     };
 }
 
@@ -52,6 +53,7 @@ export async function saveCompanySettings(settings: CompanySettings): Promise<vo
         iban: settings.iban,
         bic: settings.bic,
         tax_id: settings.tax_id,
+        vat_id: settings.vat_id,
         updated_at: new Date().toISOString(),
     };
 
