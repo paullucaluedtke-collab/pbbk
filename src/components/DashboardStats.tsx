@@ -37,7 +37,13 @@ export default function DashboardStats({ receipts }: Props) {
         };
 
         receipts.forEach(r => {
-            // Apply filter
+            // Include rule: Must be 'Verified' OR Category must be cash-related
+            const isCashReceipt = r.category === 'Barquittung Pension & Frühstück';
+            const isValid = r.status === 'Verified' || isCashReceipt;
+
+            if (!isValid) return;
+
+            // Apply specific month filter
             if (filter !== 'all' && r.date) {
                 const d = new Date(r.date);
                 const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;

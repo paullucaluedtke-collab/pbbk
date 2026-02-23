@@ -33,16 +33,21 @@ export async function getFinancialSummary(year: number): Promise<FinancialSummar
     if (invError) console.error('Error fetching revenue:', invError);
     const revenue = (invoices || []).reduce((sum, inv) => sum + (Number(inv.total) || 0), 0);
 
-    // 2. Get Expenses (Receipts)
+    // 2. Get Expenses (Receipts) - Only Verified or Cash
     const { data: receipts, error: recError } = await supabase
         .from('receipts')
-        .select('amount')
+        .select('amount, status, category')
         .eq('user_id', user.id)
         .gte('date', `${year}-01-01`)
         .lte('date', `${year}-12-31`);
 
     if (recError) console.error('Error fetching expenses:', recError);
-    const expenses = (receipts || []).reduce((sum, rec) => sum + (Number(rec.amount) || 0), 0);
+
+    // Filter in memory since Supabase OR query with enums can be slightly complex depending on setup
+    const validReceipts = (receipts || []).filter(r =>
+        r.status === 'Verified' || r.category === 'Barquittung Pension & Frühstück'
+    );
+    const expenses = validReceipts.reduce((sum, rec) => sum + (Number(rec.amount) || 0), 0);
 
     const profit = revenue - expenses;
     const taxEstimate = profit > 0 ? profit * 0.30 : 0; // Simplified 30% tax rate
@@ -82,15 +87,19 @@ export async function getMonthlyData(year: number): Promise<MonthlyData[]> {
         months[monthIndex].revenue += Number(inv.total) || 0;
     });
 
-    // 2. Expenses
+    // 2. Expenses - Only Verified or Cash
     const { data: receipts } = await supabase
         .from('receipts')
-        .select('amount, date')
+        .select('amount, date, status, category')
         .eq('user_id', user.id)
         .gte('date', `${year}-01-01`)
         .lte('date', `${year}-12-31`);
 
-    (receipts || []).forEach(rec => {
+    const validReceipts = (receipts || []).filter(r =>
+        r.status === 'Verified' || r.category === 'Barquittung Pension & Frühstück'
+    );
+
+    validReceipts.forEach(rec => {
         const monthIndex = new Date(rec.date).getMonth();
         months[monthIndex].expenses += Number(rec.amount) || 0;
     });
