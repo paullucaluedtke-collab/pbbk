@@ -26,13 +26,29 @@ export async function POST(req: NextRequest) {
 
         // Define the extraction prompt
         // Define the extraction prompt
-        const systemPrompt = `You are an expert accounting assistant.
+        const systemPrompt = `You are an expert accounting assistant for a German Pension / Hotel business.
     Analyze the uploaded receipt image and extract the following data into a strictly valid JSON object:
     - date (YYYY-MM-DD)
     - vendor (Name of the shop/vendor)
     - type (enum: "Einnahme", "Ausgabe". Most receipts are "Ausgabe". Invoices to others are "Einnahme".)
-    - category (One of: "Büromat./Porto/Tel.", "Fortbildung", "KFZ-Kosten", "Miete/Nebenkosten", "Reisekosten", "Bewirtung", "Wareneingang", "Fremdleistung", "Geldtransit", "Privatentnahme", "Grundstückskosten", "Betriebskosten allgemein", "Kartenzahlung", "Barquittung Pension & Frühstück", "Sonstiges")
-    - property (If relevant, e.g. for rent)
+    - category (Extract the best fitting category from the exact string values below. Use these rules to decide:
+        "Büromat./Porto/Tel.": Büromaterial, Stifte, Papier, Briefmarken, Porto, Telefonrechnungen, Internetkosten (außerhalb der Pension).
+        "Fortbildung": Bücher für berufliche Zwecke, Seminare, Schulungen, Kurse.
+        "KFZ-Kosten": Tankquittungen, Benzin, Diesel, Autowäsche, Parkscheine, Reparaturen am Auto, KFZ-Versicherung.
+        "Miete/Nebenkosten": Miete für Büro/Gewerbe, Rechnungen für Strom, Wasser, Heizung, Internet (nur für das Gebäude/Objekt).
+        "Reisekosten": Zugtickets, Flugtickets, Hotelübernachtungen (wenn man selbst reist), Fahrkarten, Taxi.
+        "Bewirtung": Restaurantrechnungen mit Kunden (Bewirtungsbeleg), Geschäftsessen.
+        "Wareneingang": Waren, die eingekauft werden, um sie direkt weiterzuverkaufen (für eine Pension unüblich).
+        "Fremdleistung": Rechnungen von Handwerkern, Putzkräften, Dienstleistern, Reparaturdienste (die nicht fest angestellt sind).
+        "Geldtransit": Überweisungen zwischen eigenen Konten, Bargeldabhebung am Automaten.
+        "Privatentnahme": Alle privaten Einkäufe, die nichts mit der Pension oder dem Geschäft zu tun haben (z.B. private Kleidung, privater Supermarkt-Einkauf).
+        "Grundstückskosten": Rechnungen, die direkt das Land/Grundstück betreffen, wie Grundbesitzabgaben, Müllabfuhr, Gebäudeversicherungen, Schornsteinfeger, Grundsteuer.
+        "Betriebskosten allgemein": Rechnungen für den laufenden Betrieb der Pension, z.B. GEZ, Software-Abos, allgemeine Werkzeuge, Deko für die Pension, Reinigungsmittel.
+        "Kartenzahlung": Terminal-Belege, die nur bestätigen, dass eine EC-Karte benutzt wurde, aber keine gekauften Artikel auflisten.
+        "Barquittung Pension & Frühstück": Einkäufe im Supermarkt, Bäcker oder Metzger (Kaffee, Brötchen, Wurst, Eier, Käse, Getränke) die für das Gäste-Frühstück der Pension bestimmt sind. Auch handschriftliche Barquittungen von Gästen.
+        "Sonstiges": Nur verwenden, wenn absolut keine der obigen Kategorien passt!
+    )
+    - property (If relevant, e.g. for rent or property costs)
     - taxAmount (Extract the total tax amount, as a number. If multiple tax rates, sum them up.)
     - totalAmount (The final total, as a number)
     - confidence (enum: "high", "medium", "low". Based on legibility and completeness)

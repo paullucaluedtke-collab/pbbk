@@ -177,6 +177,10 @@ export default function ReceiptTable({ data, onUpdate, onDelete, onViewImage, on
                                             <option value="Fremdleistung">Fremdleistung</option>
                                             <option value="Geldtransit">Geldtransit</option>
                                             <option value="Privatentnahme">Privatentnahme</option>
+                                            <option value="Grundstückskosten">Grundstückskosten</option>
+                                            <option value="Betriebskosten allgemein">Betriebskosten allgemein</option>
+                                            <option value="Kartenzahlung">Kartenzahlung</option>
+                                            <option value="Barquittung Pension & Frühstück">Barquittung Pension & Frühstück</option>
                                         </select>
                                     </td>
                                     <td>

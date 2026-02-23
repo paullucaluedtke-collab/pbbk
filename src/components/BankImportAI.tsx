@@ -94,15 +94,33 @@ export default function BankImportAI() {
                         {isProcessing ? (
                             <Loader2 className={uploadStyles.spinner} size={48} />
                         ) : (
-                            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                                <div className={uploadStyles.actionButton} style={{ flexDirection: 'column', gap: '0.5rem' }}>
+                            <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center' }}>
+                                <div className={uploadStyles.actionButton}>
                                     <FileImage size={32} />
-                                    <span>Kontoauszug KI-Scan (PDF/Bild)</span>
+                                    <span>Datei wählen</span>
+                                </div>
+                                <div className={uploadStyles.actionButton} onClick={(e) => {
+                                    e.preventDefault();
+                                    document.getElementById('bank-ai-camera')?.click();
+                                }}>
+                                    <Upload size={32} />
+                                    <span>Kamera</span>
                                 </div>
                             </div>
                         )}
                     </div>
                 </label>
+
+                {/* Hidden Camera Input */}
+                <input
+                    type="file"
+                    id="bank-ai-camera"
+                    className={uploadStyles.fileInput}
+                    onChange={handleChange}
+                    accept="image/*"
+                    capture="environment"
+                    disabled={isProcessing}
+                />
             </div>
 
             {error && (
