@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getBankTransactions } from '@/app/actions/bankActions';
 import BankImport from '@/components/BankImport';
+import BankImportAI from '@/components/BankImportAI';
 import { BankTransaction } from '@/types/bank';
 import { ArrowLeft, Check, AlertCircle, RefreshCw, FileText } from 'lucide-react';
 import OnboardingHint from '@/components/OnboardingHint';
@@ -48,11 +49,20 @@ export default function BankPage() {
                     <OnboardingHint title="Bankabgleich" dismissKey="bank_import">
                         Exportieren Sie Ihre Kontoauszüge als CSV-Datei aus Ihrem Online-Banking und laden Sie diese hier hoch. Das System gleicht die Transaktionen automatisch mit Ihren erfassten Belegen ab.
                     </OnboardingHint>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <BankImport />
-                        <button onClick={loadData} className={styles.secondaryButton} title="Aktualisieren">
-                            <RefreshCw size={16} />
-                        </button>
+                    <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
+                        <div style={{ flex: 1 }}>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.5rem' }}>KI Scan (PDF/Bild)</h3>
+                            <BankImportAI />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.5rem' }}>Klassisch (CSV)</h3>
+                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                                <BankImport />
+                                <button onClick={loadData} className={styles.secondaryButton} title="Aktualisieren">
+                                    <RefreshCw size={16} />
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div style={{ marginTop: '2rem' }}>

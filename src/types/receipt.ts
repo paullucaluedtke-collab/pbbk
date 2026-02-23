@@ -11,6 +11,10 @@ export type TaxCategory =
     | 'Fremdleistung'
     | 'Geldtransit'
     | 'Privatentnahme'
+    | 'Grundstückskosten'
+    | 'Betriebskosten allgemein'
+    | 'Kartenzahlung'
+    | 'Barquittung Pension & Frühstück'
     | 'Sonstiges';
 
 export interface ReceiptData {

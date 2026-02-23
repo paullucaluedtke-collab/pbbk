@@ -24,6 +24,10 @@ export const getAccount = (category: TaxCategory, type: ReceiptType, frame: Acco
         'Fremdleistung': 3100, // Fremdleistungen
         'Geldtransit': 1360,
         'Privatentnahme': 1800,
+        'Grundstückskosten': 4920,
+        'Betriebskosten allgemein': 4900,
+        'Kartenzahlung': 1360,
+        'Barquittung Pension & Frühstück': 4980,
         'Sonstiges': 4980 // Betriebsbedarf
     };
 
@@ -38,6 +42,10 @@ export const getAccount = (category: TaxCategory, type: ReceiptType, frame: Acco
         'Fremdleistung': 5900,
         'Geldtransit': 1460,
         'Privatentnahme': 2100,
+        'Grundstückskosten': 6320,
+        'Betriebskosten allgemein': 6300,
+        'Kartenzahlung': 1460,
+        'Barquittung Pension & Frühstück': 6300,
         'Sonstiges': 6300
     };
 

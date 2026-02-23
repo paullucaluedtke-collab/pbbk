@@ -126,6 +126,55 @@ export async function importBankCSV(formData: FormData): Promise<BankImportResul
     return result;
 }
 
+export async function importBankAI(transactionsData: any[]): Promise<BankImportResult> {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Unauthorized");
+
+    const result: BankImportResult = { total: 0, imported: 0, duplicates: 0, errors: 0 };
+    const transactionsToInsert = [];
+
+    for (const tx of transactionsData) {
+        result.total++;
+        try {
+            if (!tx.date || typeof tx.amount !== 'number') {
+                result.errors++;
+                continue;
+            }
+
+            transactionsToInsert.push({
+                user_id: user.id,
+                date: tx.date,
+                amount: tx.amount,
+                purpose: tx.purpose || '',
+                sender_receiver: tx.sender_receiver || '',
+                status: 'Unmatched'
+            });
+        } catch (e) {
+            console.error('Parse error AI tx', e);
+            result.errors++;
+        }
+    }
+
+    if (transactionsToInsert.length > 0) {
+        const { error } = await supabase
+            .from('bank_transactions')
+            .insert(transactionsToInsert);
+
+        if (error) {
+            console.error('Insert error:', error);
+            throw new Error('Database insert failed');
+        }
+        result.imported = transactionsToInsert.length;
+    }
+
+    // Trigger Auto-Match
+    await autoMatchTransactions();
+
+    revalidatePath('/bank');
+    return result;
+}
+
 export async function autoMatchTransactions() {
     const supabase = createClient();
 
@@ -140,29 +189,72 @@ export async function autoMatchTransactions() {
     // 2. Fetch Unmatched Receipts & Invoices
     const { data: receipts } = await supabase
         .from('receipts')
-        .select('*') // Should also check if not already matched
-        .eq('status', 'Verified'); // Only match verified receipts? Or Pending too? Let's say Verified for now.
+        .select('*')
+        .eq('status', 'Verified');
 
-    if (!receipts) return;
+    // Fetch invoices that are NOT paid, including customer data
+    const { data: invoices } = await supabase
+        .from('invoices')
+        .select(`
+            *,
+            customer:customers (
+                name
+            )
+        `)
+        .neq('status', 'Paid');
 
-    // 3. Simple Matching Logic (Amount +/- 0.05 tolerance)
+    if (!receipts && !invoices) return;
+
+    // 3. Advanced Matching Logic
     for (const tx of transactions) {
-        const match = receipts.find(r => Math.abs(r.total_amount - Math.abs(tx.amount)) < 0.05);
-        // Note: Bank amount is usually negative for expenses, positive for income. 
-        // Receipt total_amount is likely positive. 
-        // Need to check type: Expense -> Negative TX, Income -> Positive TX.
+        if (tx.amount > 0 && invoices) {
+            // INCOME -> match against invoice
+            const match = invoices.find(inv => {
+                const amountMatches = Math.abs(inv.total_amount - tx.amount) < 0.05;
 
-        if (match) {
-            // Update Transaction
-            await supabase
-                .from('bank_transactions')
-                .update({
-                    status: 'Matched',
-                    matched_receipt_id: match.id
-                })
-                .eq('id', tx.id);
+                // Extra checks for safety: invoice number in purpose OR customer name in sender/receiver
+                const purposeText = (tx.purpose || '').toLowerCase();
+                const senderText = (tx.sender_receiver || '').toLowerCase();
 
-            // Ideally update receipt too (e.g. paid_at)
+                const purposeMatches = purposeText.includes(inv.invoice_number.toLowerCase());
+
+                // Safe check since customers exist via join
+                const customerName = (inv.customer as any)?.name?.toLowerCase() || '';
+                const nameMatches = customerName && (senderText.includes(customerName) || purposeText.includes(customerName));
+
+                // We require BOTH the amount to match AND either the invoice number or the customer name to be present
+                return amountMatches && (purposeMatches || nameMatches);
+            });
+
+            if (match) {
+                await supabase
+                    .from('bank_transactions')
+                    .update({
+                        status: 'Matched',
+                        matched_invoice_id: match.id
+                    })
+                    .eq('id', tx.id);
+
+                // Mark invoice as Paid
+                await supabase
+                    .from('invoices')
+                    .update({ status: 'Paid' })
+                    .eq('id', match.id);
+            }
+        }
+        else if (tx.amount < 0 && receipts) {
+            // EXPENSE -> match against receipt
+            const match = receipts.find(r => Math.abs(r.total_amount - Math.abs(tx.amount)) < 0.05);
+
+            if (match) {
+                await supabase
+                    .from('bank_transactions')
+                    .update({
+                        status: 'Matched',
+                        matched_receipt_id: match.id
+                    })
+                    .eq('id', tx.id);
+            }
         }
     }
 }

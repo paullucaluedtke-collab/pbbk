@@ -16,37 +16,24 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'OpenAI API Key is missing. Check .env.local' }, { status: 500 });
         }
 
-        const openai = new OpenAI({
-            apiKey: apiKey,
-        });
-
+        const openai = new OpenAI({ apiKey });
         const buffer = Buffer.from(await file.arrayBuffer());
         const base64Image = buffer.toString('base64');
         const dataUrl = `data:${file.type};base64,${base64Image}`;
 
-        // Define the extraction prompt
-        // Define the extraction prompt
-        const systemPrompt = `You are an expert accounting assistant.
-    Analyze the uploaded receipt image and extract the following data into a strictly valid JSON object:
-    - date (YYYY-MM-DD)
-    - vendor (Name of the shop/vendor)
-    - type (enum: "Einnahme", "Ausgabe". Most receipts are "Ausgabe". Invoices to others are "Einnahme".)
-    - category (One of: "Büromat./Porto/Tel.", "Fortbildung", "KFZ-Kosten", "Miete/Nebenkosten", "Reisekosten", "Bewirtung", "Wareneingang", "Fremdleistung", "Geldtransit", "Privatentnahme", "Grundstückskosten", "Betriebskosten allgemein", "Kartenzahlung", "Barquittung Pension & Frühstück", "Sonstiges")
-    - property (If relevant, e.g. for rent)
-    - taxAmount (Extract the total tax amount, as a number. If multiple tax rates, sum them up.)
-    - totalAmount (The final total, as a number)
-    - confidence (enum: "high", "medium", "low". Based on legibility and completeness)
+        const systemPrompt = `You are an expert accounting assistant specialized in reading German bank statements.
+    Analyze the uploaded bank statement image and extract ALL transactions into a strictly valid JSON array.
+    For each transaction, provide an object with:
+    - date (YYYY-MM-DD, try your best to parse it)
+    - amount (number, negative for outgoing/expenses, positive for incoming/income)
+    - sender_receiver (String, name of the counterparty, owner, or shop)
+    - purpose (String, description, Verwendungszweck, or booking text)
     
-    If the image is not a receipt, return fields with null values and confidence "low".
-    Return ONLY pure JSON, no markdown formatting.`;
+    If the image contains no transactions, return an empty array [].
+    Return ONLY a pure JSON array, no markdown formatting. Do not wrap in a JSON object. Just the array.`;
 
-        // Strategy: Try Mini first, unless forced
-        let model = 'gpt-4o-mini';
-        if (forceHighQuality) {
-            model = 'gpt-4o';
-        }
-
-        console.log(`Analyzing receipt with model: ${model}`);
+        let model = forceHighQuality ? 'gpt-4o' : 'gpt-4o-mini';
+        console.log(`Analyzing bank statement with model: ${model}`);
 
         let completion = await openai.chat.completions.create({
             model: model,
@@ -59,16 +46,16 @@ export async function POST(req: NextRequest) {
                     ],
                 },
             ],
-            max_tokens: 500,
+            max_tokens: 1500, // higher token limit to handle multiple rows
             temperature: 0,
         });
 
         let content = completion.choices[0].message.content;
         let result = parseJSON(content);
 
-        // Hybrid Logic: If Mini was used but result is low confidence/unsure, retry with GPT-4o
-        if (model === 'gpt-4o-mini' && (result?.confidence === 'low' || !result)) {
-            console.log("Low confidence with Mini, upgrading to GPT-4o...");
+        // Fallback to high quality if parsing failed or array is empty when it shouldn't be
+        if (model === 'gpt-4o-mini' && (!result || !Array.isArray(result) || result.length === 0)) {
+            console.log("Mini model failed or returned empty array, retrying with GPT-4o...");
             completion = await openai.chat.completions.create({
                 model: 'gpt-4o',
                 messages: [
@@ -80,17 +67,17 @@ export async function POST(req: NextRequest) {
                         ],
                     },
                 ],
-                max_tokens: 500,
+                max_tokens: 1500,
                 temperature: 0,
             });
             content = completion.choices[0].message.content;
             result = parseJSON(content);
         }
 
-        return NextResponse.json(result || { error: "Failed to parse receipt" });
+        return NextResponse.json(result || { error: "Failed to parse bank statement" });
 
     } catch (error: any) {
-        console.error('Error processing receipt:', error);
+        console.error('Error processing bank statement:', error);
         return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
     }
 }
@@ -98,7 +85,6 @@ export async function POST(req: NextRequest) {
 function parseJSON(content: string | null) {
     if (!content) return null;
     try {
-        // Remove markdown code blocks if present
         const clean = content.replace(/```json/g, '').replace(/```/g, '').trim();
         return JSON.parse(clean);
     } catch (e) {
