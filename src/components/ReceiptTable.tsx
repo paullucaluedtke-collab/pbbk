@@ -181,6 +181,7 @@ export default function ReceiptTable({ data, onUpdate, onDelete, onViewImage, on
                                             <option value="Betriebskosten allgemein">Betriebskosten allgemein</option>
                                             <option value="Kartenzahlung">Kartenzahlung</option>
                                             <option value="Barquittung Pension & Frühstück">Barquittung Pension & Frühstück</option>
+                                            <option value="Geringfügige Wirtschaftsgüter">Geringfügige Wirtschaftsgüter (GWG)</option>
                                         </select>
                                     </td>
                                     <td>

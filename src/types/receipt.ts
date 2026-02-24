@@ -15,6 +15,7 @@ export type TaxCategory =
     | 'Betriebskosten allgemein'
     | 'Kartenzahlung'
     | 'Barquittung Pension & Frühstück'
+    | 'Geringfügige Wirtschaftsgüter'
     | 'Sonstiges';
 
 export interface ReceiptData {

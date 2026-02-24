@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
         "Betriebskosten allgemein": Rechnungen für den laufenden Betrieb der Pension, z.B. GEZ, Software-Abos, allgemeine Werkzeuge, Deko für die Pension, Reinigungsmittel.
         "Kartenzahlung": Terminal-Belege, die nur bestätigen, dass eine EC-Karte benutzt wurde, aber keine gekauften Artikel auflisten.
         "Barquittung Pension & Frühstück": Einkäufe im Supermarkt, Bäcker oder Metzger (Kaffee, Brötchen, Wurst, Eier, Käse, Getränke) die für das Gäste-Frühstück der Pension bestimmt sind. Auch handschriftliche Barquittungen von Gästen.
+        "Geringfügige Wirtschaftsgüter": Anschaffungen von Arbeitsmitteln, Geräten oder Ausstattung (z.B. Staubsauger, kleine Möbel, Kaffeemaschine), die einzeln nutzbar sind und zwischen 250 € und 800 € (Netto) kosten (sogenannte GWG).
         "Sonstiges": Nur verwenden, wenn absolut keine der obigen Kategorien passt!
     )
     - property (If relevant, e.g. for rent or property costs)

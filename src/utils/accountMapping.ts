@@ -28,6 +28,7 @@ export const getAccount = (category: TaxCategory, type: ReceiptType, frame: Acco
         'Betriebskosten allgemein': 4900,
         'Kartenzahlung': 1360,
         'Barquittung Pension & Frühstück': 4980,
+        'Geringfügige Wirtschaftsgüter': 4855, // SKR03 GWG bis 800 EUR
         'Sonstiges': 4980 // Betriebsbedarf
     };
 
@@ -46,6 +47,7 @@ export const getAccount = (category: TaxCategory, type: ReceiptType, frame: Acco
         'Betriebskosten allgemein': 6300,
         'Kartenzahlung': 1460,
         'Barquittung Pension & Frühstück': 6300,
+        'Geringfügige Wirtschaftsgüter': 6260, // SKR04 GWG bis 800 EUR
         'Sonstiges': 6300
     };
 
