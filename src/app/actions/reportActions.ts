@@ -33,19 +33,28 @@ export async function getFinancialSummary(year: number): Promise<FinancialSummar
     if (invError) console.error('Error fetching revenue:', invError);
     const revenue = (invoices || []).reduce((sum, inv) => sum + (Number(inv.total) || 0), 0);
 
-    // 2. Get Expenses (Receipts) - Only Verified or Cash
+    // 2. Get Expenses (Receipts) - Only Matched with Bank OR Cash
+    // First, fetch all matched receipt IDs from bank_transactions
+    const { data: matchedBankTx } = await supabase
+        .from('bank_transactions')
+        .select('matched_receipt_id')
+        .eq('status', 'Matched')
+        .not('matched_receipt_id', 'is', null);
+
+    const matchedReceiptIds = new Set((matchedBankTx || []).map(tx => tx.matched_receipt_id));
+
     const { data: receipts, error: recError } = await supabase
         .from('receipts')
-        .select('amount, status, category')
+        .select('id, amount, status, category')
         .eq('user_id', user.id)
         .gte('date', `${year}-01-01`)
         .lte('date', `${year}-12-31`);
 
     if (recError) console.error('Error fetching expenses:', recError);
 
-    // Filter in memory since Supabase OR query with enums can be slightly complex depending on setup
+    // Filter in memory: Must be Cash receipt OR exist in matched bank transactions
     const validReceipts = (receipts || []).filter(r =>
-        r.status === 'Verified' || r.category === 'Barquittung Pension & Frühstück'
+        r.category === 'Barquittung Pension & Frühstück' || matchedReceiptIds.has(r.id)
     );
     const expenses = validReceipts.reduce((sum, rec) => sum + (Number(rec.amount) || 0), 0);
 
@@ -87,16 +96,25 @@ export async function getMonthlyData(year: number): Promise<MonthlyData[]> {
         months[monthIndex].revenue += Number(inv.total) || 0;
     });
 
-    // 2. Expenses - Only Verified or Cash
+    // 2. Expenses - Only Matched with Bank OR Cash
+    // First, fetch all matched receipt IDs from bank_transactions
+    const { data: matchedBankTx } = await supabase
+        .from('bank_transactions')
+        .select('matched_receipt_id')
+        .eq('status', 'Matched')
+        .not('matched_receipt_id', 'is', null);
+
+    const matchedReceiptIds = new Set((matchedBankTx || []).map(tx => tx.matched_receipt_id));
+
     const { data: receipts } = await supabase
         .from('receipts')
-        .select('amount, date, status, category')
+        .select('id, amount, date, status, category')
         .eq('user_id', user.id)
         .gte('date', `${year}-01-01`)
         .lte('date', `${year}-12-31`);
 
     const validReceipts = (receipts || []).filter(r =>
-        r.status === 'Verified' || r.category === 'Barquittung Pension & Frühstück'
+        r.category === 'Barquittung Pension & Frühstück' || matchedReceiptIds.has(r.id)
     );
 
     validReceipts.forEach(rec => {
