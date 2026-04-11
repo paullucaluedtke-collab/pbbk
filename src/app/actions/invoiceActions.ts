@@ -13,6 +13,7 @@ export async function getInvoices(): Promise<Invoice[]> {
     const { data, error } = await supabase
         .from('invoices')
         .select('*, customer:customers(*), items:invoice_items(*)')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
     if (error) {
@@ -78,7 +79,8 @@ export async function deleteInvoice(id: string): Promise<void> {
     const { error: itemsError } = await supabase
         .from('invoice_items')
         .delete()
-        .eq('invoice_id', id);
+        .eq('invoice_id', id)
+        .eq('user_id', user.id);
 
     if (itemsError) {
         console.error('Error deleting invoice items:', itemsError);
@@ -89,7 +91,8 @@ export async function deleteInvoice(id: string): Promise<void> {
     const { error } = await supabase
         .from('invoices')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .eq('user_id', user.id);
 
     if (error) {
         console.error('Error deleting invoice:', error);
@@ -109,7 +112,8 @@ export async function updateInvoiceStatus(id: string, status: Invoice['status'])
     const { error } = await supabase
         .from('invoices')
         .update({ status })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('user_id', user.id);
 
     if (error) {
         console.error('Error updating invoice status:', error);

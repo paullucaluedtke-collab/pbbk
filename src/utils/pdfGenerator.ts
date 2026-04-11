@@ -39,9 +39,14 @@ export const generateInvoicePDF = (invoice: Invoice, company?: CompanySettings |
 
     if (invoice.customer) {
         doc.text(invoice.customer.name, margin, startY);
-        // Assuming address field supports newlines, split it
-        if (invoice.customer.address) {
-            const addressLines = doc.splitTextToSize(invoice.customer.address, 80);
+        // Build address from structured fields
+        const addressParts = [
+            invoice.customer.address_line1,
+            invoice.customer.address_line2,
+            invoice.customer.city_zip
+        ].filter(Boolean).join('\n');
+        if (addressParts) {
+            const addressLines = doc.splitTextToSize(addressParts, 80);
             doc.text(addressLines, margin, startY + 5);
         }
     } else {

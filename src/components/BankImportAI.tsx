@@ -7,7 +7,7 @@ import bankStyles from './BankImport.module.css';
 export default function BankImportAI() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
-    const [result, setResult] = useState<any>(null);
+    const [result, setResult] = useState<{ imported: number; errors: number; duplicates: number } | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const handleFile = async (file: File) => {

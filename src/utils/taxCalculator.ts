@@ -178,7 +178,7 @@ export function calculateTax(taxReturn: TaxReturn): TaxResult {
 
     // 5. Zu versteuerndes Einkommen
     let zvE = totalGrossIncome - totalDeductions - totalSpecial - totalExtraordinary;
-    if (isSplitting && personal.partner_income) {
+    if (isSplitting && personal.partner_income && personal.partner_income > 0) {
         zvE += personal.partner_income;
     }
     zvE = Math.max(0, Math.floor(zvE));

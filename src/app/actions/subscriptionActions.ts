@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabaseServer';
 import { Subscription } from '@/types/subscription';
+import { getNextInvoiceNumber } from './invoiceNumberAction';
 import { revalidatePath } from 'next/cache';
 
 export async function getSubscriptions() {
@@ -111,16 +112,15 @@ export async function checkAndRunSubscriptions() {
     return { processed, errors };
 }
 
-async function generateInvoiceFromSubscription(sub: any, userId: string) {
-    // Generate Invoice Number (Simple logic: Year-Month-Random/Seq)
-    // For MVP, using Date string + random suffix/prefix or just rely on addInvoice to handle?
-    // Let's assume we construct a draft.
+async function generateInvoiceFromSubscription(sub: Record<string, any>, userId: string) {
+    // Generate proper sequential invoice number
+    const invoiceNumber = await getNextInvoiceNumber();
 
     const invoiceData = {
         customer_id: sub.customer_id,
         date: new Date().toISOString().split('T')[0],
-        due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days due
-        invoice_number: `ABO-` + Date.now().toString().slice(-6), // Temporary ID logic
+        due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        invoice_number: invoiceNumber || `ABO-${Date.now().toString().slice(-6)}`,
         status: 'Draft',
         items: sub.template_data.items,
         // Calculate totals logic should be here or in addInvoice

@@ -1,13 +1,6 @@
-export interface Customer {
-    id: string;
-    user_id: string;
-    name: string;
-    address?: string;
-    email?: string;
-    tax_id?: string;
-    vat_id?: string;
-    created_at?: string;
-}
+import { Customer } from './customer';
+
+export type { Customer };
 
 export interface InvoiceItem {
     id: string;

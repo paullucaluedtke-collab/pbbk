@@ -10,7 +10,12 @@ export async function GET(req: NextRequest, { params }: { params: { filename: st
     }
 
     const COMPLETED_UPLOADS_DIR = path.join(process.cwd(), 'data', 'uploads');
-    const filepath = path.join(COMPLETED_UPLOADS_DIR, filename);
+    const filepath = path.resolve(COMPLETED_UPLOADS_DIR, filename);
+
+    // Verify the resolved path is still within the uploads directory
+    if (!filepath.startsWith(COMPLETED_UPLOADS_DIR)) {
+        return new NextResponse('Invalid filename', { status: 400 });
+    }
 
     if (!fs.existsSync(filepath)) {
         return new NextResponse('File not found', { status: 404 });

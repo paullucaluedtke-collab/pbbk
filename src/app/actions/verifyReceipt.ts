@@ -16,7 +16,8 @@ export async function verifyReceipt(id: string, status: 'Verified' | 'Rejected')
             verified_at: new Date().toISOString(),
             verified_by: user.id
         })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('user_id', user.id);
 
     if (error) {
         console.error('Error verifying receipt:', error);

@@ -34,7 +34,7 @@ export async function getBankTransactions() {
         return [];
     }
 
-    return data as any[];
+    return data as BankTransaction[];
 }
 
 export async function importBankCSV(formData: FormData): Promise<BankImportResult> {
@@ -81,13 +81,24 @@ export async function importBankCSV(formData: FormData): Promise<BankImportResul
             const senderReceiver = cols[3] || '';
 
             // Parse Date (DD.MM.YYYY -> YYYY-MM-DD)
-            const [day, month, year] = dateStr.split('.');
-            const isoDate = `${year}-${month}-${day}`;
+            const dateParts = dateStr.split('.');
+            if (dateParts.length !== 3) {
+                result.errors++;
+                continue;
+            }
+            const [day, month, year] = dateParts;
+            const parsedDate = new Date(+year, +month - 1, +day);
+            if (isNaN(parsedDate.getTime()) || +month < 1 || +month > 12 || +day < 1 || +day > 31) {
+                result.errors++;
+                continue;
+            }
+            const isoDate = parsedDate.toISOString().split('T')[0];
 
             // Parse Amount (German: 1.000,00 -> 1000.00)
-            const amount = parseFloat(amountStr.replace(/\./g, '').replace(',', '.'));
+            const cleanedAmount = amountStr.replace(/\s/g, '').replace(/€/g, '').trim();
+            const amount = parseFloat(cleanedAmount.replace(/\./g, '').replace(',', '.'));
 
-            if (isNaN(amount) || !isoDate) {
+            if (isNaN(amount)) {
                 result.errors++;
                 continue;
             }
@@ -108,15 +119,36 @@ export async function importBankCSV(formData: FormData): Promise<BankImportResul
     }
 
     if (transactionsToInsert.length > 0) {
-        const { error } = await supabase
+        // Check for existing transactions to prevent duplicates
+        const { data: existingTx } = await supabase
             .from('bank_transactions')
-            .insert(transactionsToInsert); // Note: In real app, handling duplicates (upsert) is better
+            .select('date, amount, purpose')
+            .eq('user_id', user.id);
 
-        if (error) {
-            console.error('Insert error:', error);
-            throw new Error('Database insert failed');
+        const existingSet = new Set(
+            (existingTx || []).map(tx => `${tx.date}|${tx.amount}|${tx.purpose}`)
+        );
+
+        const newTransactions = transactionsToInsert.filter(tx => {
+            const key = `${tx.date}|${tx.amount}|${tx.purpose}`;
+            if (existingSet.has(key)) {
+                result.duplicates++;
+                return false;
+            }
+            return true;
+        });
+
+        if (newTransactions.length > 0) {
+            const { error } = await supabase
+                .from('bank_transactions')
+                .insert(newTransactions);
+
+            if (error) {
+                console.error('Insert error:', error);
+                throw new Error('Database insert failed');
+            }
         }
-        result.imported = transactionsToInsert.length;
+        result.imported = newTransactions.length;
     }
 
     // Trigger Auto-Match
@@ -186,11 +218,12 @@ export async function autoMatchTransactions() {
 
     if (!transactions || transactions.length === 0) return;
 
-    // 2. Fetch Unmatched Receipts & Invoices
+    // 2. Fetch Unmatched Receipts (only expenses) & Invoices
     const { data: receipts } = await supabase
         .from('receipts')
         .select('*')
-        .eq('status', 'Verified');
+        .eq('status', 'Verified')
+        .eq('type', 'Ausgabe');
 
     // Fetch invoices that are NOT paid, including customer data
     const { data: invoices } = await supabase

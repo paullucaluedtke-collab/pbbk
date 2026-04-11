@@ -1,12 +1,32 @@
 "use server";
 
 import { revalidatePath } from 'next/cache';
-import { ReceiptData } from '@/types/receipt';
+import { ReceiptData, TaxCategory, ReceiptType } from '@/types/receipt';
 import { saveReceipt, getReceipts as getReceiptsFromStorage, deleteReceipt as deleteReceiptFromStorage, updateReceipt } from '@/lib/storage';
 import { createClient } from '@/lib/supabaseServer';
 import { createHash } from 'crypto';
 
-export async function addReceipt(formData: FormData, analysisData: any) {
+const VALID_CATEGORIES: TaxCategory[] = [
+    'Büromat./Porto/Tel.', 'Fortbildung', 'KFZ-Kosten', 'Miete/Nebenkosten',
+    'Reisekosten', 'Bewirtung', 'Wareneingang', 'Fremdleistung', 'Geldtransit',
+    'Privatentnahme', 'Grundstückskosten', 'Betriebskosten allgemein',
+    'Kartenzahlung', 'Barquittung Pension & Frühstück', 'Geringfügige Wirtschaftsgüter', 'Sonstiges'
+];
+
+const VALID_TYPES: ReceiptType[] = ['Ausgabe', 'Einnahme'];
+
+interface AnalysisResult {
+    date?: string;
+    vendor?: string;
+    category?: string;
+    type?: string;
+    property?: string;
+    taxAmount?: number;
+    totalAmount?: number;
+    confidence?: 'high' | 'medium' | 'low';
+}
+
+export async function addReceipt(formData: FormData, analysisData: AnalysisResult) {
     const supabase = createClient();
     const file = formData.get('file') as File;
 
@@ -41,8 +61,8 @@ export async function addReceipt(formData: FormData, analysisData: any) {
         id: crypto.randomUUID(),
         date: analysisData.date || new Date().toISOString().split('T')[0],
         vendor: analysisData.vendor || 'Unbekannt',
-        category: analysisData.category || 'Sonstiges',
-        type: analysisData.type || 'Ausgabe',
+        category: (VALID_CATEGORIES.includes(analysisData.category as TaxCategory) ? analysisData.category : 'Sonstiges') as TaxCategory,
+        type: (VALID_TYPES.includes(analysisData.type as ReceiptType) ? analysisData.type : 'Ausgabe') as ReceiptType,
         property: analysisData.property || undefined,
         taxAmount: typeof analysisData.taxAmount === 'number' ? analysisData.taxAmount : 0,
         totalAmount: typeof analysisData.totalAmount === 'number' ? analysisData.totalAmount : 0,

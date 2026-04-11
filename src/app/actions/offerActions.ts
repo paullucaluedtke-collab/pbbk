@@ -104,20 +104,18 @@ export async function convertToInvoice(offerId: string): Promise<string> {
 
     if (!offer) throw new Error('Angebot nicht gefunden');
 
-    // 2. Create Invoice
+    // 2. Create Invoice (map offer fields to invoice schema)
     const invoicePayload = {
         user_id: user.id,
-        invoice_number: `INV-${offer.offer_number}`, // Simple fallback, should be handled better in real app
-        customer_name: offer.customer_name,
-        customer_address: offer.customer_address,
+        customer_id: offer.customer_id || null,
+        invoice_number: `INV-${offer.offer_number}`,
         date: new Date().toISOString().slice(0, 10),
-        due_date: new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10), // +14 days default
-        items: offer.items,
+        due_date: new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10),
         subtotal: offer.subtotal,
-        tax_total: offer.tax_total,
-        total: offer.total,
-        status: 'Unpaid',
-        notes: `Erstellt aus Angebot ${offer.offer_number}`
+        tax_amount: offer.tax_total,
+        total_amount: offer.total,
+        status: 'Draft',
+        footer_text: `Erstellt aus Angebot ${offer.offer_number}`
     };
 
     const { data: invoice, error: invError } = await supabase
@@ -127,6 +125,27 @@ export async function convertToInvoice(offerId: string): Promise<string> {
         .single();
 
     if (invError) throw new Error('Rechnung konnte nicht erstellt werden: ' + invError.message);
+
+    // 2b. Create invoice items from offer items
+    if (offer.items && Array.isArray(offer.items) && offer.items.length > 0) {
+        const invoiceItems = offer.items.map((item: any) => ({
+            invoice_id: invoice.id,
+            user_id: user.id,
+            description: item.description,
+            quantity: item.quantity,
+            unit_price: item.price,
+            tax_rate: item.tax,
+            total_price: item.quantity * item.price
+        }));
+
+        const { error: itemsError } = await supabase
+            .from('invoice_items')
+            .insert(invoiceItems);
+
+        if (itemsError) {
+            console.error('Error creating invoice items from offer:', itemsError);
+        }
+    }
 
     // 3. Update Offer Status
     await supabase
