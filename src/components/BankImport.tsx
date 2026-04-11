@@ -7,7 +7,7 @@ import styles from './BankImport.module.css';
 
 export default function BankImport() {
     const [isUploading, setIsUploading] = useState(false);
-    const [result, setResult] = useState<any>(null);
+    const [result, setResult] = useState<{ imported: number; errors: number; duplicates: number } | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +62,7 @@ export default function BankImport() {
                 <div className={styles.success}>
                     <CheckCircle size={16} />
                     <span>
-                        Import erfolgreich: {result.imported} neu, {result.errors} Fehler.
+                        Import erfolgreich: {result.imported} neu{result.duplicates > 0 ? `, ${result.duplicates} Duplikate übersprungen` : ''}{result.errors > 0 ? `, ${result.errors} Fehler` : ''}.
                     </span>
                 </div>
             )}

@@ -24,7 +24,7 @@ export default function Home() {
     const [error, setError] = useState<string | null>(null);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
     const [loadingAuth, setLoadingAuth] = useState(true);
 
     // Check Auth Session

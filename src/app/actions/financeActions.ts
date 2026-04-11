@@ -22,6 +22,8 @@ export async function getFinancialStats(year: number, month: number): Promise<Fi
     // Calculate last day of month
     const endDate = new Date(year, month, 0).toISOString().split('T')[0];
 
+    const { data: { user } } = await supabase.auth.getUser();
+
     const { data: receipts } = await supabase
         .from('receipts')
         .select('*')
@@ -44,9 +46,9 @@ export async function getFinancialStats(year: number, month: number): Promise<Fi
 
     if (!receipts) return stats;
 
-    receipts.forEach((r: any) => {
-        const amount = parseFloat(r.total_amount || 0);
-        const tax = parseFloat(r.tax_amount || 0);
+    receipts.forEach((r: Record<string, string | number>) => {
+        const amount = parseFloat(String(r.total_amount || 0));
+        const tax = parseFloat(String(r.tax_amount || 0));
         const net = amount - tax;
 
         if (r.type === 'Einnahme') {
@@ -80,7 +82,7 @@ export async function generateExport(year: number, month: number, format: 'DATEV
     const headers = getExportHeaders(format);
     const rows = [headers.join(';')];
 
-    receipts.forEach((r: any) => {
+    receipts.forEach((r: Record<string, any>) => {
         const amount = parseFloat(r.total_amount).toFixed(2).replace('.', ',');
         const dateRaw = new Date(r.date);
         const dateCode = format === 'DATEV'

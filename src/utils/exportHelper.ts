@@ -50,7 +50,7 @@ export const generateZipExport = async (receipts: ReceiptData[]) => {
     // Trigger Download
     const link = document.createElement('a');
     link.href = URL.createObjectURL(content);
-    link.download = `Steueunterlagen_${new Date().toISOString().slice(0, 10)}.zip`;
+    link.download = `Steuerunterlagen_${new Date().toISOString().slice(0, 10)}.zip`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

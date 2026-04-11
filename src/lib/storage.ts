@@ -1,7 +1,8 @@
 import { ReceiptData } from '@/types/receipt';
 import { supabase } from '@/lib/supabaseClient';
+import { SupabaseClient } from '@supabase/supabase-js';
 
-export const getReceipts = async (supabaseClient?: any): Promise<ReceiptData[]> => {
+export const getReceipts = async (supabaseClient?: SupabaseClient | null): Promise<ReceiptData[]> => {
     const client = supabaseClient || supabase;
     if (!client) return [];
 
@@ -55,7 +56,7 @@ export const getReceipts = async (supabaseClient?: any): Promise<ReceiptData[]> 
     return receiptsWithSignedUrls;
 };
 
-export const saveReceipt = async (receipt: ReceiptData, imageBuffer: Buffer, supabaseClient?: any, fileHash?: string): Promise<void> => {
+export const saveReceipt = async (receipt: ReceiptData, imageBuffer: Buffer, supabaseClient?: SupabaseClient | null, fileHash?: string): Promise<void> => {
     const client = supabaseClient || supabase;
     if (!client) throw new Error("Supabase not configured");
 
@@ -93,7 +94,7 @@ export const saveReceipt = async (receipt: ReceiptData, imageBuffer: Buffer, sup
     receipt.imageUrl = publicUrl;
 
     // 2. Insert into DB
-    const insertData: any = {
+    const insertData: Record<string, string | number | undefined> = {
         id: receipt.id,
         user_id: user.id,
         date: receipt.date,
@@ -121,29 +122,34 @@ export const saveReceipt = async (receipt: ReceiptData, imageBuffer: Buffer, sup
     }
 };
 
-export const deleteReceipt = async (id: string, supabaseClient?: any): Promise<void> => {
+export const deleteReceipt = async (id: string, supabaseClient?: SupabaseClient | null): Promise<void> => {
     const client = supabaseClient || supabase;
-    if (!client) return;
+    if (!client) throw new Error("Supabase not configured");
 
     const { data: { user } } = await client.auth.getUser();
-    if (!user) return;
+    if (!user) throw new Error("User not authenticated");
 
-    // Delete Image
-    const filename = `${user.id}/${id}.jpg`;
-    await client.storage.from('receipts').remove([filename]);
+    // Try to delete image (attempt common extensions)
+    const extensions = ['jpg', 'jpeg', 'png', 'pdf', 'webp'];
+    const filesToRemove = extensions.map(ext => `${user.id}/${id}.${ext}`);
+    await client.storage.from('receipts').remove(filesToRemove);
 
     // Delete Record
     const { error } = await client
         .from('receipts')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .eq('user_id', user.id);
 
-    if (error) console.error('Delete error', error);
+    if (error) {
+        console.error('Delete error', error);
+        throw new Error('Beleg konnte nicht gelöscht werden: ' + error.message);
+    }
 };
 
-export const updateReceipt = async (updatedReceipt: ReceiptData, supabaseClient?: any): Promise<void> => {
+export const updateReceipt = async (updatedReceipt: ReceiptData, supabaseClient?: SupabaseClient | null): Promise<void> => {
     const client = supabaseClient || supabase;
-    if (!client) return;
+    if (!client) throw new Error("Supabase not configured");
 
     const { error } = await client
         .from('receipts')
@@ -158,5 +164,8 @@ export const updateReceipt = async (updatedReceipt: ReceiptData, supabaseClient?
         })
         .eq('id', updatedReceipt.id);
 
-    if (error) console.error('Update error', error);
+    if (error) {
+        console.error('Update error', error);
+        throw new Error('Beleg konnte nicht aktualisiert werden: ' + error.message);
+    }
 };

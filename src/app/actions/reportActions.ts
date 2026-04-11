@@ -45,7 +45,7 @@ export async function getFinancialSummary(year: number): Promise<FinancialSummar
 
     const { data: receipts, error: recError } = await supabase
         .from('receipts')
-        .select('id, amount, status, category')
+        .select('id, total_amount, status, category')
         .eq('user_id', user.id)
         .gte('date', `${year}-01-01`)
         .lte('date', `${year}-12-31`);
@@ -56,7 +56,7 @@ export async function getFinancialSummary(year: number): Promise<FinancialSummar
     const validReceipts = (receipts || []).filter(r =>
         r.category === 'Barquittung Pension & Frühstück' || matchedReceiptIds.has(r.id)
     );
-    const expenses = validReceipts.reduce((sum, rec) => sum + (Number(rec.amount) || 0), 0);
+    const expenses = validReceipts.reduce((sum, rec) => sum + (Number(rec.total_amount) || 0), 0);
 
     const profit = revenue - expenses;
     const taxEstimate = profit > 0 ? profit * 0.30 : 0; // Simplified 30% tax rate
@@ -108,7 +108,7 @@ export async function getMonthlyData(year: number): Promise<MonthlyData[]> {
 
     const { data: receipts } = await supabase
         .from('receipts')
-        .select('id, amount, date, status, category')
+        .select('id, total_amount, date, status, category')
         .eq('user_id', user.id)
         .gte('date', `${year}-01-01`)
         .lte('date', `${year}-12-31`);
@@ -119,7 +119,7 @@ export async function getMonthlyData(year: number): Promise<MonthlyData[]> {
 
     validReceipts.forEach(rec => {
         const monthIndex = new Date(rec.date).getMonth();
-        months[monthIndex].expenses += Number(rec.amount) || 0;
+        months[monthIndex].expenses += Number(rec.total_amount) || 0;
     });
 
     // Calculate Profit
